@@ -1,4 +1,4 @@
-# Домашнее задание к занятию «Системы контроля версий»
+# Домашнее задание к занятию 1 «Системы контроля версий» - `Заяц Алексей`
 
 ### Цель задания
 
@@ -34,7 +34,32 @@
 
 Version Control System, VCS
 
+```bash
+git clone https://github.com/alexeyzayac/devops-netology.git
+cd devops-netology
+git config --global user.name alexeyzayac
+git config --global user.email alexeyzayac@icloud.com
+git status
+echo "Version Control System, VCS" > README.md
+git status
+git diff
+git diff --staged
+git add README.md
+git diff
+git diff --staged
+git commit -m 'First commit'
+git status
+git diff
+git diff --staged
+```
+
 ### Создание файлов `.gitignore` и второго коммита
+
+```bash
+touch .gitignore
+git add .gitignore
+git commit -m 'Added gitignore'
+```
 
 В будущем не будут отслеживаться и попадать в git:
 
@@ -55,4 +80,32 @@ Version Control System, VCS
 8. Опционально могут игнорироваться файлы планов и графов Terraform, если соответствующие строки будут раскомментированы в .gitignore.
 
 ### Эксперимент с удалением и перемещением файлов (третий и четвёртый коммит)
+
+```bash
+echo "will_be_deleted" > will_be_deleted.txt
+echo "will_be_moved" > will_be_moved.txt
+git add will_be_deleted.txt will_be_moved.txt
+git commit -m "Prepare to delete and move"
+git rm will_be_deleted.txt
+git mv will_be_moved.txt has_been_moved.txt
+git status
+git commit -m "Moved and deleted"
+```
+
+### Проверка изменения
+
+```bash
+ufo@NEXA-HOST:~/devops-netology (main)$ git log --oneline
+c0b1647 (HEAD -> main) Moved and deleted
+4916b18 Prepare to delete and move
+917799a Added gitignore
+764b47a First commit
+954c68f (origin/main, origin/HEAD) Initial commit
+```
+
+### Отправка изменений в репозиторий
+
+```bash
+git push
+```
 
