@@ -25,6 +25,8 @@
 
 ## Задание 1. Знакомимся с GitLab
 
+В данном задание ветка **main** = **14.01_version_control_system**
+
 [Репозиторий GitLab](https://gitlab.com/alexeyzayac/devops-netology)
 
 Вывод команды git remote -v:
@@ -34,6 +36,8 @@ ufo@NEXA-HOST:~/devops-netology (14.01_version_control_system)$ git remote -v
 origin  https://github.com/alexeyzayac/devops-netology.git (fetch)
 origin  https://github.com/alexeyzayac/devops-netology.git (push)
 ```
+
+Добавляем этот репозиторий, как дополнительный:
 
 ```bash
 git remote add gitlab https://gitlab.com/alexeyzayac/devops-netology.git
@@ -52,11 +56,15 @@ origin  https://github.com/alexeyzayac/devops-netology.git (push)
 
 ## Задание 2. Теги
 
+**Легковестный тег** - не содержит дополнительной информации, кроме указания на коммит.
+
 ```bash
 git tag v0.0
 git push origin v0.0
 git push gitlab v0.0
 ```
+
+**Аннотированный тег** - отображается с автором, датой и сообщением.
 
 ```bash
 git tag -a v0.1 -m "Release version 0.1"
@@ -64,12 +72,13 @@ git push origin v0.1
 git push gitlab v0.1
 ```
 
-
 [Тэги GitHub](https://github.com/alexeyzayac/devops-netology/tags)
 
 [Тэги GitLab](https://gitlab.com/alexeyzayac/devops-netology/-/tags)
 
 ## Задание 3. Ветки 
+
+Создание веток:
 
 ```bash
 git log —oneline
