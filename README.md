@@ -1,95 +1,115 @@
-# Домашнее задание к занятию 2 «Основы Git» - `Заяц Алексей`
+# Домашнее задание к занятию 3 "`Защита сети`" - `Заяц Алексей`
 
-### Цель задания
+### Инструкция по выполнению домашнего задания
 
-В результате выполнения задания вы:
+   1. Сделайте `fork` данного репозитория к себе в Github и переименуйте его по названию или номеру занятия, например, https://github.com/имя-вашего-репозитория/git-hw или  https://github.com/имя-вашего-репозитория/7-1-ansible-hw).
+   2. Выполните клонирование данного репозитория к себе на ПК с помощью команды `git clone`.
+   3. Выполните домашнее задание и заполните у себя локально этот файл README.md:
+      - впишите вверху название занятия и вашу фамилию и имя
+      - в каждом задании добавьте решение в требуемом виде (текст/код/скриншоты/ссылка)
+      - для корректного добавления скриншотов воспользуйтесь [инструкцией "Как вставить скриншот в шаблон с решением](https://github.com/netology-code/sys-pattern-homework/blob/main/screen-instruction.md)
+      - при оформлении используйте возможности языка разметки md (коротко об этом можно посмотреть в [инструкции  по MarkDown](https://github.com/netology-code/sys-pattern-homework/blob/main/md-instruction.md))
+   4. После завершения работы над домашним заданием сделайте коммит (`git commit -m "comment"`) и отправьте его на Github (`git push origin`);
+   5. Для проверки домашнего задания преподавателем в личном кабинете прикрепите и отправьте ссылку на решение в виде md-файла в вашем Github.
+   6. Любые вопросы по выполнению заданий спрашивайте в чате учебной группы и/или в разделе “Вопросы по заданию” в личном кабинете.
+   
+Желаем успехов в выполнении домашнего задания!
 
-* научитесь работать с Git, как с распределённой системой контроля версий; 
-* сможете создавать и настраивать репозиторий для работы в GitHub, GitLab и Bitbucket; 
-* попрактикуетесь работать с тегами;
-* поработаете с Git при помощи визуального редактора.
+---
 
-### Чеклист готовности к домашнему заданию
+### Подготовка к выполнению заданий
+1. Подготовка защищаемой системы:
+* установите **Suricata**,
+* установите **Fail2Ban**.
+2. Подготовка системы злоумышленника: установите **nmap** и **thc-hydra** либо скачайте и установите **Kali linux**.
 
-1. Установлена консольная утилита для работы с Git.
-2. Есть возможность зарегистрироваться на GitHub, GitLab.
-3. Регистрация на Bitbucket не является обязательной. 
+Обе системы должны находится в одной подсети.
 
+---
 
-### Инструкция к заданию
+### Задание 1
 
-1. В личном кабинете отправьте на проверку ссылки на ваши репозитории.
-2. Любые вопросы по решению задач задавайте в разделе "Вопросы по заданию".
+Проведите разведку системы и определите, какие сетевые службы запущены на защищаемой системе:
 
-------
+**sudo nmap -sA < ip-адрес >**
 
-## Задание 1. Знакомимся с GitLab
+**sudo nmap -sT < ip-адрес >**
 
-В данном задание ветка **main** = **14.01_version_control_system**
+**sudo nmap -sS < ip-адрес >**
 
-[Репозиторий GitLab](https://gitlab.com/alexeyzayac/devops-netology)
+**sudo nmap -sV < ip-адрес >**
 
-Вывод команды git remote -v:
+По желанию можете поэкспериментировать с опциями: https://nmap.org/man/ru/man-briefoptions.html.
 
-```bash
-ufo@NEXA-HOST:~/devops-netology (14.01_version_control_system)$ git remote -v
-origin  https://github.com/alexeyzayac/devops-netology.git (fetch)
-origin  https://github.com/alexeyzayac/devops-netology.git (push)
-```
+*В качестве ответа пришлите события, которые попали в логи Suricata и Fail2Ban, прокомментируйте результат.*
 
-Добавляем этот репозиторий, как дополнительный:
+#### Решение:
 
-```bash
-git remote add gitlab https://gitlab.com/alexeyzayac/devops-netology.git
-git push -u gitlab 14.01_version_control_system
-```
+**/var/log/suricata/eve.json:**
 
-Повторный вывод команды git remote -v:
+После выполнения команд c ключами: **-sS, -sT, -sA, -sV**
 
-```bash
-ufo@NEXA-HOST:~/devops-netology (14.01_version_control_system)$ git remote -v
-gitlab  https://gitlab.com/alexeyzayac/devops-netology.git (fetch)
-gitlab  https://gitlab.com/alexeyzayac/devops-netology.git (push)
-origin  https://github.com/alexeyzayac/devops-netology.git (fetch)
-origin  https://github.com/alexeyzayac/devops-netology.git (push)
-```
-
-## Задание 2. Теги
-
-**Легковестный тег** - не содержит дополнительной информации, кроме указания на коммит.
-
-```bash
-git tag v0.0
-git push origin v0.0
-git push gitlab v0.0
-```
-
-**Аннотированный тег** - отображается с автором, датой и сообщением.
-
-```bash
-git tag -a v0.1 -m "Release version 0.1"
-git push origin v0.1
-git push gitlab v0.1
-```
-
-[Тэги GitHub](https://github.com/alexeyzayac/devops-netology/tags)
-
-[Тэги GitLab](https://gitlab.com/alexeyzayac/devops-netology/-/tags)
-
-## Задание 3. Ветки 
-
-Создание веток:
-
-```bash
-git log —oneline
-git checkout 4916b18
-git switch -c fix
-git push -u origin fix
-echo "New line" >> README.md
-git commit -am "Update README.md with new line"
-git push -u origin fix
-git log --oneline --graph --all
-```
+Вывод: много коротких TCP-попыток.
 
 ![img](img/screenshot_1.png)
+
+---
+
+Вывод: Нормальные TCP-сессии, реальное соединение. Сервис либо отказал, либо быстро закрыл соединение
+
 ![img](img/screenshot_2.png)
+
+---
+
+Вывод: пришёл ACK без контекста, поток завис, таймаут.
+
+![img](img/screenshot_3.png)
+
+---
+
+Вывод: использует обычные TCP-соединения, версия сервисов запрашивается легитимным способом.
+
+![img](img/screenshot_4.png)
+
+---
+
+**/var/log/fail2ban.log:**
+
+Вывод: Nmap сам по себе не генерируют записи о неудачных логинах в логах fail2ban, поэтому в логах нет никаких запесей, связанных с nmap.
+
+![img](img/screenshot_5.png)
+
+---
+
+### Задание 2
+
+Проведите атаку на подбор пароля для службы SSH:
+
+**hydra -L users.txt -P pass.txt < ip-адрес > ssh**
+
+1. Настройка hydra:
+* создайте два файла: **users.txt** и **pass.txt**;
+* в каждой строчке первого файла должны быть имена пользователей, второго — пароли. В нашем случае это могут быть случайные строки, но ради эксперимента можете добавить имя и пароль существующего пользователя.
+
+Дополнительная информация по **hydra**: https://kali.tools/?p=1847.
+
+2. Включение защиты SSH для Fail2Ban:
+* открыть файл /etc/fail2ban/jail.conf,
+* найти секцию **ssh**,
+* установить **enabled** в **true**.
+
+Дополнительная информация по **Fail2Ban**: https://putty.org.ru/articles/fail2ban-ssh.html.
+
+*В качестве ответа пришлите события, которые попали в логи Suricata и Fail2Ban, прокомментируйте результат.*
+
+#### Решение:
+
+Вывод: множественные TCP-соединения к порту 22 в логах Suricata
+
+![img](img/screenshot_6.png)
+
+---
+
+Вывод: попытки авторизации и бан на 6 попытку в логах Fail2Ban
+
+![img](img/screenshot_7.png)
