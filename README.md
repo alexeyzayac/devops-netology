@@ -1,122 +1,94 @@
-# Домашнее задание к занятию 1 «Системы контроля версий» - `Заяц Алексей`
+# Домашнее задание к занятию 2 «Основы Git» - `Заяц Алексей`
 
 ### Цель задания
 
-В результате выполнения задания вы: 
+В результате выполнения задания вы:
 
-* научитесь подготоваливать новый репозиторий к работе;
-* сохранять, перемещать и удалять файлы в системе контроля версий.  
-
+* научитесь работать с Git, как с распределённой системой контроля версий; 
+* сможете создавать и настраивать репозиторий для работы в GitHub, GitLab и Bitbucket; 
+* попрактикуетесь работать с тегами;
+* поработаете с Git при помощи визуального редактора.
 
 ### Чеклист готовности к домашнему заданию
 
 1. Установлена консольная утилита для работы с Git.
+2. Есть возможность зарегистрироваться на GitHub, GitLab.
+3. Регистрация на Bitbucket не является обязательной. 
 
 ### Инструкция к заданию
 
-1. Домашнее задание выполните в GitHub-репозитории. 
-2. В личном кабинете отправьте на проверку ссылку на ваш репозиторий с домашним заданием.
-3. Любые вопросы по решению задач задавайте в разделе "Вопросы по заданию".
+1. В личном кабинете отправьте на проверку ссылки на ваши репозитории.
+2. Любые вопросы по решению задач задавайте в разделе "Вопросы по заданию".
 
-
-### Дополнительные материалы для выполнения задания
-
-1. [GitHub](https://github.com/).
-2. [Инструкция по установке Git](https://git-scm.com/downloads).
-3. [Книга про  Git на русском языке](https://git-scm.com/book/ru/v2/) - рекомендуем к обязательному изучению главы 1-7.
-   
 ------
 
-## Задание 1. Создать и настроить репозиторий для дальнейшей работы на курсе
+## Задание 1. Знакомимся с GitLab
 
-### Создание репозитория и первого коммита
+В данном задание ветка **main** = **14.01_version_control_system**
 
-Version Control System, VCS
+[Репозиторий GitLab](https://gitlab.com/alexeyzayac/devops-netology)
 
-```bash
-git clone https://github.com/alexeyzayac/devops-netology.git
-cd devops-netology
-git config --global user.name alexeyzayac
-git config --global user.email alexeyzayac@icloud.com
-git status
-echo "Version Control System, VCS" > README.md
-git status
-git diff
-git diff --staged
-git add README.md
-git diff
-git diff --staged
-git commit -m 'First commit'
-git status
-git diff
-git diff --staged
-```
-
-### Создание файлов `.gitignore` и второго коммита
+Вывод команды git remote -v:
 
 ```bash
-touch .gitignore
-git add .gitignore
-git commit -m 'Added gitignore'
+ufo@NEXA-HOST:~/devops-netology (14.01_version_control_system)$ git remote -v
+origin  https://github.com/alexeyzayac/devops-netology.git (fetch)
+origin  https://github.com/alexeyzayac/devops-netology.git (push)
 ```
 
-В будущем не будут отслеживаться и попадать в git:
-
-- ```.terraform/``` — будет игнорироваться вся директория .terraform и всё её содержимое.
-
-- ```*.tfstate``` — будут игнорироваться все файлы, имя которых заканчивается на .tfstate.
-
-- ```*.tfstate.*``` — будут игнорироваться все файлы, имя которых начинается с .tfstate. и имеет любое продолжение.
-
-- ```crash.log``` - будет игнорироваться файл с точным именем crash.log.
-
-- ```crash.*.log``` — будут игнорироваться все файлы, имя которых начинается с crash., затем содержит любую последовательность символов, и заканчивается на .log.
-
-- ```*.tfvars``` — будут игнорироваться все файлы, имя которых заканчивается на .tfvars.
-
-- ```*.tfvars.json``` — будут игнорироваться все файлы, имя которых заканчивается на .tfvars.json.
-
-- ```override.tf``` — будет игнорироваться файл с точным именем override.tf.
-
-- ```override.tf.json``` - будет игнорироваться файл с точным именем override.tf.json.
-
-- ```*_override.tf``` — будут игнорироваться все файлы, имя которых оканчивается на _override.tf.
-
-- ```*_override.tf.json``` - будут игнорироваться все файлы, имя которых оканчивается на _override.tf.json.
-
-- ```.terraform.tfstate.lock.info``` - будет игнорироваться файл с точным именем .terraform.tfstate.lock.info.
-
-- ```.terraformrc``` — будет игнорироваться файл с точным именем .terraformrc.
-
-- ```terraform.rc``` — будет игнорироваться файл с точным именем terraform.rc.
-
-### Эксперимент с удалением и перемещением файлов (третий и четвёртый коммит)
+Добавляем этот репозиторий, как дополнительный:
 
 ```bash
-echo "will_be_deleted" > will_be_deleted.txt
-echo "will_be_moved" > will_be_moved.txt
-git add will_be_deleted.txt will_be_moved.txt
-git commit -m "Prepare to delete and move"
-git rm will_be_deleted.txt
-git mv will_be_moved.txt has_been_moved.txt
-git status
-git commit -m "Moved and deleted"
+git remote add gitlab https://gitlab.com/alexeyzayac/devops-netology.git
+git push -u gitlab 14.01_version_control_system
 ```
 
-### Проверка изменения
+Повторный вывод команды git remote -v:
 
 ```bash
-ufo@NEXA-HOST:~/devops-netology (main)$ git log --oneline
-c0b1647 (HEAD -> main) Moved and deleted
-4916b18 Prepare to delete and move
-917799a Added gitignore
-764b47a First commit
-954c68f (origin/main, origin/HEAD) Initial commit
+ufo@NEXA-HOST:~/devops-netology (14.01_version_control_system)$ git remote -v
+gitlab  https://gitlab.com/alexeyzayac/devops-netology.git (fetch)
+gitlab  https://gitlab.com/alexeyzayac/devops-netology.git (push)
+origin  https://github.com/alexeyzayac/devops-netology.git (fetch)
+origin  https://github.com/alexeyzayac/devops-netology.git (push)
 ```
 
-### Отправка изменений в репозиторий
+## Задание 2. Теги
+
+**Легковестный тег** - не содержит дополнительной информации, кроме указания на коммит.
 
 ```bash
-git push
+git tag v0.0
+git push origin v0.0
+git push gitlab v0.0
 ```
 
+**Аннотированный тег** - отображается с автором, датой и сообщением.
+
+```bash
+git tag -a v0.1 -m "Release version 0.1"
+git push origin v0.1
+git push gitlab v0.1
+```
+
+[Тэги GitHub](https://github.com/alexeyzayac/devops-netology/tags)
+
+[Тэги GitLab](https://gitlab.com/alexeyzayac/devops-netology/-/tags)
+
+## Задание 3. Ветки 
+
+Создание веток:
+
+```bash
+git log —oneline
+git checkout 4916b18
+git switch -c fix
+git push -u origin fix
+echo "New line" >> README.md
+git commit -am "Update README.md with new line"
+git push -u origin fix
+git log --oneline --graph --all
+```
+
+![img](img/screenshot_1.png)
+![img](img/screenshot_2.png)
