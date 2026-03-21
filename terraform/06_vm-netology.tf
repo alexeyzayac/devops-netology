@@ -1,8 +1,8 @@
 # 05_vm-netology.tf
 
-resource "yandex_compute_instance" "vm_netology" {
-  name        = "vm_netology"
-  hostname    = "vm_netology"
+resource "yandex_compute_instance" "vm-netology" {
+  name        = "vm-netology"
+  hostname    = "vm-netology"
   platform_id = "standard-v3"
   zone        = "ru-central1-a"
 

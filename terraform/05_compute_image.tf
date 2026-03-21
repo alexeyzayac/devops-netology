@@ -1,6 +1,9 @@
-# 04_compute_image.tf
+# 05_compute_image.tf
+locals {
+  image_id = "fd8stsue5rim479kphah"
+}
 
-# Получение данных об образе ОС Ubuntu 24.04 LTS
-data "yandex_compute_image" "ubuntu_2404_lts" {
-  family = "ubuntu-2404-lts"
+# либо data для справки, но это необязательно
+data "yandex_compute_image" "toolbox" {
+  image_id = local.image_id
 }
