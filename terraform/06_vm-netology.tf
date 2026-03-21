@@ -14,7 +14,7 @@ resource "yandex_compute_instance" "vm-netology" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu_2404_lts.image_id
+      image_id = data.yandex_compute_image.toolbox.image_id
       type     = "network-hdd"
       size     = 30
     }
