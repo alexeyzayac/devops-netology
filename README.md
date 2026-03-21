@@ -1,95 +1,37 @@
-# Домашнее задание к занятию 3 «Ветвления в Git» - `Заяц Алексей`
+# Домашнее задание к занятию 4 «Инструменты Git» - `Заяц Алексей`
 
 ### Цель задания
 
-В процессе работы над заданием вы потренеруетесь делать merge и rebase. В результате вы поймете разницу между ними и научитесь решать конфликты.   
+В результате выполнения задания вы:
 
-Обычно при нормальном ходе разработки выполнять `rebase` достаточно просто. 
-Это позволяет объединить множество промежуточных коммитов при решении задачи, чтобы не засорять историю. Поэтому многие команды и разработчики предпочитают такой способ.   
-
+* научитесь работать с утилитами Git;
+* потренируетесь решать типовые задачи, возникающие при работе в команде. 
 
 ### Инструкция к заданию
 
-1. В личном кабинете отправьте на проверку ссылку на network графика вашего репозитория.
-2. Любые вопросы по решению задач задавайте в разделе "Вопросы по заданию".
-
-
-### Дополнительные материалы для выполнения задания
-
-1. Тренажёр [LearnGitBranching](https://learngitbranching.js.org/), где можно потренироваться в работе с деревом коммитов и ветвлений. 
+1. Склонируйте [репозиторий](https://github.com/hashicorp/terraform) с исходным кодом Terraform.
+2. Создайте файл для ответов на задания в своём репозитории, после выполнения прикрепите ссылку на .md-файл с ответами в личном кабинете.
+3. Любые вопросы по решению задач задавайте в разделе "Вопросы по заданию".
 
 ------
 
-## Задание «Ветвление, merge и rebase»  
+## Задание
 
-**В выполнение задания ветка 14.03_branching_in_git = main**
+В клонированном репозитории:
 
-## Подготовка файла merge.sh
+1. Найдите полный хеш и комментарий коммита, хеш которого начинается на `aefea`.
+2. Ответьте на вопросы.
 
-### Шаг 1.
+* Какому тегу соответствует коммит `85024d3`?
+* Сколько родителей у коммита `b8d720`? Напишите их хеши.
+* Перечислите хеши и комментарии всех коммитов, которые были сделаны между тегами  v0.12.23 и v0.12.24.
+* Найдите коммит, в котором была создана функция `func providerSource`, её определение в коде выглядит так: `func providerSource(...)` (вместо троеточия перечислены аргументы).
+* Найдите все коммиты, в которых была изменена функция `globalPluginDirs`.
+* Кто автор функции `synchronizedWriters`? 
 
-![img](img/screenshot_1.png)
+*В качестве решения ответьте на вопросы и опишите, как были получены эти ответы.*
 
-### Шаг 5. 
+---
 
-![img](img/screenshot_2.png)
+## Решение
 
-## Изменим main
-
-### Шаг 3.
-
-![img](img/screenshot_3.png)
-
-## Подготовка файла rebase.sh
-
-### Шаг 2. + Шаг 3. + Шаг 4. + Шаг 5.   
-
-```bash
-ufo@NEXA-HOST:~/devops-netology (14.03_branching_in_git)$ git log --oneline -2
-2f1f406 (HEAD -> 14.03_branching_in_git, origin/14.03_branching_in_git) main: update rebase.sh
-4c1006c prepare for merge and rebase
-ufo@NEXA-HOST:~/devops-netology (14.03_branching_in_git)$ git checkout 4c1006c
-ufo@NEXA-HOST:~/devops-netology ((HEAD отделён на 4c1006c))$ git switch -c git-rebase
-Переключились на новую ветку «git-rebase»
-ufo@NEXA-HOST:~/devops-netology (git-rebase)$ git commit -am "git-rebase 1"
-ufo@NEXA-HOST:~/devops-netology (git-rebase)$ git commit -am "git-rebase 2"
-```
-
-## Промежуточный итог
-
-![img](img/screenshot_4.png)
-
-## Merge
-
-![img](img/screenshot_5.png)
-
-## Rebase
-
-### Шаг 6. 
-
-![img](img/screenshot_6.png)
-
-### Шаг 7. + Шаг 8. 
-
-![img](img/screenshot_7.png)
-
-### Шаг 9. + Итог
-
-```bash
-ufo@NEXA-HOST:~/devops-netology (git-rebase)$ git checkout 14.03_branching_in_git
-Переключились на ветку «14.03_branching_in_git»
-Эта ветка соответствует «origin/14.03_branching_in_git».
-ufo@NEXA-HOST:~/devops-netology (14.03_branching_in_git)$ git merge git-rebase
-Обновление a85e66e..f00ab36
-Fast-forward
- branching/rebase.sh | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-```
-
-![img](img/screenshot_8.png)
-
-**[Network graph](https://github.com/alexeyzayac/devops-netology/network)**
-
-Ветление до последнего комита, с целью размежения ДЗ.
-
-![img](img/screenshot_final.png)
