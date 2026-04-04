@@ -1,0 +1,41 @@
+### Local: (данные файлы создаются автоматически при развёртывании Terraform)
+inventory.ini
+
+### SSH keys: (сгенерированные ключи)
+/ssh/*
+!/ssh/.gitkeep
+
+### Terraform:
+**/.terraform/
+**/.terraformrc
+*.tfstate
+*.tfstate.*
+.terraform.tfstate*
+.terraform.lock.hcl
+*.tfplan
+*.tfplan.json
+crash.log
+crash.*.log
+*_override.tf
+*_override.tf.json
+*.tfvars
+!terraform.tfvars.example
+!*.auto.tfvars
+!override.tf
+!override.tf.json
+!*.auto.tfvars
+.terraformrc
+terraform.rc
+
+### IDEs и временные файлы:
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

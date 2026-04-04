@@ -1,0 +1,10 @@
+# Git
+.git
+.gitignore
+
+# Фото
+img
+
+# Докер-файлы (чтобы не копировать самих себя)
+Dockerfile*
+.dockerignore
