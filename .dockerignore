@@ -12,3 +12,9 @@ Dockerfile*
 #python
 venv
 __pycache__
+
+#inoe
+ansible
+cloud-init
+ssh
+terraform
