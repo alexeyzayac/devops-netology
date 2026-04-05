@@ -51,8 +51,37 @@ See 'snap info docker' for additional versions.
 
 ### Решение: 
 
+### 1: Dockerfile.python
+
 **[multistage](Dockerfile.python)**
 
 ![img](img/screenshot_2.png)
 
+### 2: С помощью venv
+
+![img](img/screenshot_3.png)
+
 ---
+
+## Задача 2 (*)
+1. Создайте в yandex cloud container registry с именем "test" с помощью "yc tool" . [Инструкция](https://cloud.yandex.ru/ru/docs/container-registry/quickstart/?from=int-console-help)
+2. Настройте аутентификацию вашего локального docker в yandex container registry.
+3. Соберите и залейте в него образ с python приложением из задания №1.
+4. Просканируйте образ на уязвимости.
+5. В качестве ответа приложите отчет сканирования.
+
+### Решение: 
+
+```bash
+docker build --platform linux/amd64 --provenance=false -f Dockerfile.python -t my-python-app:1.0.0 .
+docker tag my-python-app:1.0.0 cr.yandex/crpv4a4bg5s360l57p3j/my-python-app:1.0.0
+yc container image list --repository-name=crpv4a4bg5s360l57p3j/my-python-app
+yc container image scan crpiue1sp6iu4racn799
+yc container image list-scan-results --image-id=crpiue1sp6iu4racn799
+yc container image list-vulnerabilities --scan-result-id=chev6hlvlvmks1mq7o7r --format yaml >> scan_docker.yaml
+```
+
+**[Отчет сканирования](scan_docker.yaml)**
+
+---
+

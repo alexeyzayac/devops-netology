@@ -39,3 +39,7 @@ terraform.rc
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#python
+venv
+__pycache__

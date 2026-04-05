@@ -8,3 +8,7 @@ img
 # Докер-файлы (чтобы не копировать самих себя)
 Dockerfile*
 .dockerignore
+
+#python
+venv
+__pycache__
