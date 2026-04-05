@@ -105,7 +105,7 @@ yc container image list-vulnerabilities --scan-result-id=chev6hlvlvmks1mq7o7r --
 
 ### Решение: 
 
-**[Отчет сканирования](compose.yaml)**
+**[compose.yaml](compose.yaml)**
 
 ![img](img/screenshot_4.png)
 
