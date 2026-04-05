@@ -137,7 +137,26 @@ yc container image list-vulnerabilities --scan-result-id=chev6hlvlvmks1mq7o7r --
 ```bash
 docker pull hashicorp/terraform:latest
 docker save hashicorp/terraform:latest -o terraform.tar
+dive hashicorp/terraform:latest
 ```
+
+![img](img/screenshot_7.png)
+
+```bash
+mkdir terraform
+tar -xf terraform.tar -C terraform
+cd terraform
+nano manifest.json
+```
+
+**Последний слой: f491828cf45bec9cdfb7d00792af9367df8ffe018d010abc1b79cea9de7931aa**
+![img](img/screenshot_8.png)
+
+```bash
+tar -xf blobs/sha256/f491828cf45bec9cdfb7d00792af9367df8ffe018d010abc1b79cea9de7931aa bin/terraform
+```
+
+![img](img/screenshot_9.png)
 
 ---
 
@@ -147,6 +166,12 @@ docker save hashicorp/terraform:latest -o terraform.tar
 
 ### Решение: 
 
+```bash
+docker run -d --rm --name test_terraform --entrypoint tail hashicorp/terraform:latest -f /dev/null
+docker cp test_terraform:/bin/terraform ./terraform
+```
+![img](img/screenshot_10.png)
+
 ---
 
 ## Задача 6.2 (**)
@@ -154,3 +179,7 @@ docker save hashicorp/terraform:latest -o terraform.tar
 Предоставьте скриншоты  действий .
 
 ### Решение: 
+
+**[Dockerfile](test/Dockerfile)**
+
+![img](img/screenshot_11.png)
