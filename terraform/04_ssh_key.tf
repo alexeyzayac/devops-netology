@@ -1,4 +1,4 @@
-# 03_ssh_key.tf
+# 04_ssh_key.tf
 
 # Генерация пары ключей (алгоритм ED25519)
 resource "tls_private_key" "ssh" {

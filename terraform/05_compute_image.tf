@@ -1,9 +1,10 @@
 # 05_compute_image.tf
+
 locals {
-  image_id = "fd8stsue5rim479kphah"
+  image_id = "fd83c1pf8uf99qhppnvb"
 }
 
-# либо data для справки, но это необязательно
 data "yandex_compute_image" "toolbox" {
-  image_id = local.image_id
+  #image_id = local.image_id
+  family = "ubuntu-2404-lts-oslogin"
 }

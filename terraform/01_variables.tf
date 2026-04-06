@@ -3,7 +3,7 @@
 # Переменная для идентификации потока/версии
 variable "flow" {
   type    = string
-  default = "zayac-02-2026"
+  default = "zayac-04-2026"
 }
 
 # Идентификатор облака в Yandex Cloud

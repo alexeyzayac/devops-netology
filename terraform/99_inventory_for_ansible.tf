@@ -3,7 +3,9 @@
 resource "local_file" "inventory" {
   content = <<-INI
 [netology]
-${yandex_compute_instance.vm-netology.name} ansible_host=${yandex_compute_instance.vm-netology.network_interface[0].nat_ip_address}
+${yandex_compute_instance.vm-swarm-manager.name}  ansible_host=${yandex_compute_instance.vm-swarm-manager.network_interface[0].nat_ip_address}
+${yandex_compute_instance.vm-node-1.name}         ansible_host=${yandex_compute_instance.vm-node-1.network_interface[0].nat_ip_address}
+${yandex_compute_instance.vm-node-2.name}         ansible_host=${yandex_compute_instance.vm-node-2.network_interface[0].nat_ip_address}
 
 [all:vars]
 ansible_user=localadmin

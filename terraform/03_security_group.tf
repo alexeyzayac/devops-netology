@@ -1,6 +1,6 @@
 # 03_security_group.tf
 
-# Настройка сервера bastion
+# Настройка сервера
 resource "yandex_vpc_security_group" "netology_sg" {
   name       = "netology-sg-${var.flow}"
   network_id = yandex_vpc_network.develop.id
@@ -9,6 +9,41 @@ resource "yandex_vpc_security_group" "netology_sg" {
     description    = "SSH from internet"
     protocol       = "TCP"
     port           = 22
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description    = "2377 from internet"
+    protocol       = "TCP"
+    port           = 2377
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+    ingress {
+    description    = "5000 from internet"
+    protocol       = "TCP"
+    port           = 5000
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description    = "7946 from internet"
+    protocol       = "TCP"
+    port           = 7946
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+    ingress {
+    description    = "7946 (UDP) from internet"
+    protocol       = "UDP"
+    port           = 7946
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+    ingress {
+    description    = "4789 from internet"
+    protocol       = "UDP"
+    port           = 4789
     v4_cidr_blocks = ["0.0.0.0/0"]
   }
 
