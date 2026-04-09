@@ -1,0 +1,20 @@
+# Git
+.git
+.gitignore
+
+# Фото
+img
+
+# Докер-файлы (чтобы не копировать самих себя)
+Dockerfile*
+.dockerignore
+
+#python
+venv
+__pycache__
+
+#inoe
+ansible
+cloud-init
+ssh
+terraform

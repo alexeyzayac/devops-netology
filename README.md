@@ -1,23 +1,185 @@
-# Домашнее задание к занятию № "`Тема`" - `Заяц Алексей`
+# Домашнее задание к занятию 5 «Практическое применение Docker» - `Заяц Алексей`
 
+### Инструкция к выполнению
 
-### Инструкция по выполнению домашнего задания
-
-   1. Сделайте `fork` данного репозитория к себе в Github и переименуйте его по названию или номеру занятия, например, https://github.com/имя-вашего-репозитория/git-hw или  https://github.com/имя-вашего-репозитория/7-1-ansible-hw).
-   2. Выполните клонирование данного репозитория к себе на ПК с помощью команды `git clone`.
-   3. Выполните домашнее задание и заполните у себя локально этот файл README.md:
-      - впишите вверху название занятия и вашу фамилию и имя
-      - в каждом задании добавьте решение в требуемом виде (текст/код/скриншоты/ссылка)
-      - для корректного добавления скриншотов воспользуйтесь [инструкцией "Как вставить скриншот в шаблон с решением](https://github.com/netology-code/sys-pattern-homework/blob/main/screen-instruction.md)
-      - при оформлении используйте возможности языка разметки md (коротко об этом можно посмотреть в [инструкции  по MarkDown](https://github.com/netology-code/sys-pattern-homework/blob/main/md-instruction.md))
-   4. После завершения работы над домашним заданием сделайте коммит (`git commit -m "comment"`) и отправьте его на Github (`git push origin`);
-   5. Для проверки домашнего задания преподавателем в личном кабинете прикрепите и отправьте ссылку на решение в виде md-файла в вашем Github.
-   6. Любые вопросы по выполнению заданий спрашивайте в чате учебной группы и/или в разделе “Вопросы по заданию” в личном кабинете.
-   
-Желаем успехов в выполнении домашнего задания!
-   
-### Дополнительные материалы, которые могут быть полезны для выполнения задания
-
-1. [Руководство по оформлению Markdown файлов](https://gist.github.com/Jekins/2bf2d0638163f1294637#Code)
+1. Для выполнения заданий обязательно ознакомьтесь с [инструкцией](https://github.com/netology-code/devops-materials/blob/master/cloudwork.MD) по экономии облачных ресурсов. Это нужно, чтобы не расходовать средства, полученные в результате использования промокода.
+3. **Своё решение к задачам оформите в вашем GitHub репозитории.**
+4. В личном кабинете отправьте на проверку ссылку на .md-файл в вашем репозитории.
+5. Сопроводите ответ необходимыми скриншотами.
 
 ---
+## Примечание: Ознакомьтесь со схемой виртуального стенда [по ссылке](https://github.com/netology-code/shvirtd-example-python/blob/main/schema.pdf)
+
+---
+
+## Задача 0
+1. Убедитесь что у вас НЕ(!) установлен ```docker-compose```, для этого получите следующую ошибку от команды ```docker-compose --version```
+```
+Command 'docker-compose' not found, but can be installed with:
+
+sudo snap install docker          # version 24.0.5, or
+sudo apt  install docker-compose  # version 1.25.0-1
+
+See 'snap info docker' for additional versions.
+```
+В случае наличия установленного в системе ```docker-compose``` - удалите его.  
+2. Убедитесь что у вас УСТАНОВЛЕН ```docker compose```(без тире) версии не менее v2.24.X, для это выполните команду ```docker compose version```  
+###  **Своё решение к задачам оформите в вашем GitHub репозитории!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**
+
+### Решение: 
+
+![img](img/screenshot_1.png)
+
+---
+
+## Задача 1
+1. Сделайте в своем GitHub пространстве fork [репозитория](https://github.com/netology-code/shvirtd-example-python).
+
+2. Создайте файл ```Dockerfile.python``` на основе существующего `Dockerfile`:
+   - Используйте базовый образ ```python:3.12-slim```
+   - Обязательно используйте конструкцию ```COPY . .``` в Dockerfile
+   - Создайте `.dockerignore` файл для исключения ненужных файлов
+   - Используйте ```CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]``` для запуска
+   - Протестируйте корректность сборки
+2.1 Используйте multistage сборку вместо single stage.
+3. (Необязательная часть, *) Изучите инструкцию в проекте и запустите web-приложение без использования docker, с помощью venv. (Mysql БД можно запустить в docker run).
+
+---
+### ВНИМАНИЕ!
+!!! В процессе последующего выполнения ДЗ НЕ изменяйте содержимое файлов в fork-репозитории! Ваша задача ДОБАВИТЬ 5 файлов: ```Dockerfile.python```, ```compose.yaml```, ```.gitignore```, ```.dockerignore```,```bash-скрипт```. Если вам понадобилось внести иные изменения в проект - вы что-то делаете неверно!
+---
+
+### Решение: 
+
+### 2: Dockerfile.python
+
+**[multistage](Dockerfile.python)**
+
+![img](img/screenshot_2.png)
+
+### 3: С помощью venv
+
+![img](img/screenshot_3.png)
+
+---
+
+## Задача 2 (*)
+1. Создайте в yandex cloud container registry с именем "test" с помощью "yc tool" . [Инструкция](https://cloud.yandex.ru/ru/docs/container-registry/quickstart/?from=int-console-help)
+2. Настройте аутентификацию вашего локального docker в yandex container registry.
+3. Соберите и залейте в него образ с python приложением из задания №1.
+4. Просканируйте образ на уязвимости.
+5. В качестве ответа приложите отчет сканирования.
+
+### Решение: 
+
+```bash
+yc container registry create --name test
+yc container registry configure-docker
+docker build --platform linux/amd64 --provenance=false -f Dockerfile.python -t my-python-app:1.0.0 .
+docker tag my-python-app:1.0.0 cr.yandex/crpv4a4bg5s360l57p3j/my-python-app:1.0.0
+yc container image list --repository-name=crpv4a4bg5s360l57p3j/my-python-app
+yc container image scan crpiue1sp6iu4racn799
+yc container image list-scan-results --image-id=crpiue1sp6iu4racn799
+yc container image list-vulnerabilities --scan-result-id=chev6hlvlvmks1mq7o7r --format yaml >> scan_docker.yaml
+```
+
+**[Отчет сканирования](scan_docker.yaml)**
+
+---
+
+## Задача 3
+1. Изучите файл "proxy.yaml"
+2. Создайте в репозитории с проектом файл ```compose.yaml```. С помощью директивы "include" подключите к нему файл "proxy.yaml".
+3. Опишите в файле ```compose.yaml``` следующие сервисы: 
+
+- ```web```. Образ приложения должен ИЛИ собираться при запуске compose из файла ```Dockerfile.python``` ИЛИ скачиваться из yandex cloud container registry(из задание №2 со *). Контейнер должен работать в bridge-сети с названием ```backend``` и иметь фиксированный ipv4-адрес ```172.20.0.5```. Сервис должен всегда перезапускаться в случае ошибок.
+Передайте необходимые ENV-переменные для подключения к Mysql базе данных по сетевому имени сервиса ```web``` 
+
+- ```db```. image=mysql:8. Контейнер должен работать в bridge-сети с названием ```backend``` и иметь фиксированный ipv4-адрес ```172.20.0.10```. Явно перезапуск сервиса в случае ошибок. Передайте необходимые ENV-переменные для создания: пароля root пользователя, создания базы данных, пользователя и пароля для web-приложения.Обязательно используйте уже существующий .env file для назначения секретных ENV-переменных!
+
+2. Запустите проект локально с помощью docker compose , добейтесь его стабильной работы: команда ```curl -L http://127.0.0.1:8090``` должна возвращать в качестве ответа время и локальный IP-адрес. Если сервисы не стартуют воспользуйтесь командами: ```docker ps -a ``` и ```docker logs <container_name>``` . Если вместо IP-адреса вы получаете информационную ошибку --убедитесь, что вы шлете запрос на порт ```8090```, а не 5000.
+
+5. Подключитесь к БД mysql с помощью команды ```docker exec -ti <имя_контейнера> mysql -uroot -p<пароль root-пользователя>```(обратите внимание что между ключем -u и логином root нет пробела. это важно!!! тоже самое с паролем) . Введите последовательно команды (не забываем в конце символ ; ): ```show databases; use <имя вашей базы данных(по-умолчанию virtd, как это указано в .env)>; show tables; SELECT * from requests LIMIT 10;```. Примечание: таблица в БД создается после первого поступившего запроса к приложению.
+
+6. Остановите проект. В качестве ответа приложите скриншот sql-запроса.
+
+### Решение: 
+
+**[compose.yaml](compose.yaml)**
+
+![img](img/screenshot_4.png)
+
+![img](img/screenshot_5.png)
+
+---
+
+## Задача 4
+1. Запустите в Yandex Cloud ВМ (вам хватит 2 Гб Ram).
+2. Подключитесь к Вм по ssh и установите docker.
+3. Напишите bash-скрипт, который скачает ваш fork-репозиторий в каталог /opt и запустит проект целиком.
+4. Зайдите на сайт проверки http подключений, например(или аналогичный): ```https://check-host.net/check-http``` и запустите проверку вашего сервиса ```http://<внешний_IP-адрес_вашей_ВМ>:8090```. Таким образом трафик будет направлен в ingress-proxy. Трафик должен пройти через цепочки: Пользователь → Internet → Nginx → HAProxy → FastAPI(запись в БД) → HAProxy → Nginx → Internet → Пользователь
+6. Повторите SQL-запрос на сервере и приложите скриншот и ссылку на fork.
+
+### Решение: 
+
+**[bash-скрипт, который скачает ваш fork-репозиторий и запутит](bash.sh)**
+
+![img](img/screenshot_6.png)
+
+---
+
+## Задача 6
+Скачайте docker образ ```hashicorp/terraform:latest``` и скопируйте бинарный файл ```/bin/terraform``` на свою локальную машину, используя dive и docker save.
+Предоставьте скриншоты  действий .
+
+### Решение: 
+
+```bash
+docker pull hashicorp/terraform:latest
+docker save hashicorp/terraform:latest -o terraform.tar
+dive hashicorp/terraform:latest
+```
+
+![img](img/screenshot_7.png)
+
+```bash
+mkdir terraform
+tar -xf terraform.tar -C terraform
+cd terraform
+nano manifest.json
+```
+
+**Последний слой: f491828cf45bec9cdfb7d00792af9367df8ffe018d010abc1b79cea9de7931aa**
+![img](img/screenshot_8.png)
+
+```bash
+tar -xf blobs/sha256/f491828cf45bec9cdfb7d00792af9367df8ffe018d010abc1b79cea9de7931aa bin/terraform
+```
+
+![img](img/screenshot_9.png)
+
+---
+
+## Задача 6.1
+Добейтесь аналогичного результата, используя docker cp.  
+Предоставьте скриншоты  действий .
+
+### Решение: 
+
+```bash
+docker run -d --rm --name test_terraform --entrypoint tail hashicorp/terraform:latest -f /dev/null
+docker cp test_terraform:/bin/terraform ./terraform
+```
+![img](img/screenshot_10.png)
+
+---
+
+## Задача 6.2 (**)
+Предложите способ извлечь файл из контейнера, используя только команду docker build и любой Dockerfile.  
+Предоставьте скриншоты  действий .
+
+### Решение: 
+
+**[Dockerfile](test/Dockerfile)**
+
+![img](img/screenshot_11.png)
