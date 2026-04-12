@@ -110,3 +110,32 @@ keep_locally (Boolean) - If true, then the Docker image won't be deleted on dest
 ```
 
 6. Зайдите на вашу ВМ , подключитесь к контейнеру и проверьте наличие секретных env-переменных с помощью команды ```env```. Запишите ваш финальный код в репозиторий.
+
+### Решение:
+
+1. Заходим в каталог [infra](infra/), в котором выполняем код для поднятия машины:
+
+```bash
+cd infra
+terraform init
+terraform apply
+```
+
+2. Затем заходим в каталог [docker](infra/docker/), в котором  выполняем код для поднятия докер:
+
+```bash
+cd docker
+terraform init
+terraform apply
+```
+
+3. Подключаемся к машине из корня проекта командой:
+```bash
+ssh -i secrets/cloud-zayac-04-2026 -l localadmin <IP-публичный-VM>
+```
+
+4. Выполняем проверку на ВМ:
+
+```bash
+docker exec -it tf-mysql-zayac-04-2026 env | grep MYSQL
+```
