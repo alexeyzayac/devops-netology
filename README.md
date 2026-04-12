@@ -149,3 +149,15 @@ docker exec -it tf-mysql-zayac-04-2026 env | grep MYSQL
 2. Попробуйте выполнить тот же код с помощью ```tofu apply```, а не terraform apply.
 
 ### Решение:
+
+```bash
+cd infra/
+tofu init
+tofu apply
+
+cd docker 
+tofu init
+tofu apply
+```
+
+![img](img/screenshot_7.png)
