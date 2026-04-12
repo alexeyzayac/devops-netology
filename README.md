@@ -151,7 +151,7 @@ docker exec -it tf-mysql-zayac-04-2026 env | grep MYSQL
 ### Решение:
 
 ```bash
-cd infra/
+cd infra
 tofu init
 tofu apply
 
@@ -160,4 +160,10 @@ tofu init
 tofu apply
 ```
 
+П.С.: При использовании OpenTofu вместо Terraform для работы с провайдером yandex-cloud/yandex необходимо явно указать полный путь к реестру, так как по умолчанию OpenTofu ищет провайдеров в своём реестре registry.opentofu.org, где данный провайдер отсутствует. Чтобы OpenTofu смог загрузить провайдер из официального реестра HashiCorp, в блоке required_providers следует указать source = "registry.terraform.io/yandex-cloud/yandex". Это перенаправит OpenTofu на registry.terraform.io, где провайдер доступен в нужной версии. 
+
 ![img](img/screenshot_7.png)
+
+![img](img/screenshot_8.png)
+
+![img](img/screenshot_9.png)

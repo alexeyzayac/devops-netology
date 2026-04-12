@@ -3,19 +3,19 @@
 terraform {
   required_providers {
     yandex = {
-      source  = "yandex-cloud/yandex"
+      source  = "registry.terraform.io/yandex-cloud/yandex"
       version = "0.197.0"
     }
     random = {
-      source  = "hashicorp/random"
+      source  = "registry.terraform.io/hashicorp/random"
       version = "~> 3.8.1"
     }
     local = {
-      source  = "hashicorp/local"
+      source  = "registry.terraform.io/hashicorp/local"
       version = "~> 2.8"
     }
     tls = {
-      source  = "hashicorp/tls"
+      source  = "registry.terraform.io/hashicorp/tls"
       version = "~> 4.2.1"
     }
   }
