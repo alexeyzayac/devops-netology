@@ -139,3 +139,13 @@ ssh -i secrets/cloud-zayac-04-2026 -l localadmin <IP-публичный-VM>
 ```bash
 docker exec -it tf-mysql-zayac-04-2026 env | grep MYSQL
 ```
+
+![img](img/screenshot_6.png)
+
+------
+
+### Задание 3*
+1. Установите [opentofu](https://opentofu.org/)(fork terraform с лицензией Mozilla Public License, version 2.0) любой версии
+2. Попробуйте выполнить тот же код с помощью ```tofu apply```, а не terraform apply.
+
+### Решение:
