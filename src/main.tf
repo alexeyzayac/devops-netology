@@ -28,14 +28,27 @@ resource "yandex_compute_instance" "platform" {
   name        = local.web_vm_name
   platform_id = var.vm_web_platform_id #заменено
   zone        = var.default_zone
+#  resources {
+#    cores         = var.vm_web_cores #заменено
+#    memory        = var.vm_web_memory #заменено
+#    core_fraction = var.vm_web_core_fraction #заменено
+#  }
   resources {
-    cores         = var.vm_web_cores #заменено
-    memory        = var.vm_web_memory #заменено
-    core_fraction = var.vm_web_core_fraction #заменено
+    cores         = var.vms_resources["web"].cores
+    memory        = var.vms_resources["web"].memory
+    core_fraction = var.vms_resources["web"].core_fraction
   }
+  
+#  boot_disk {
+#    initialize_params {
+#      image_id = data.yandex_compute_image.ubuntu.image_id
+#    }
+#  }
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
+      size     = var.vms_resources["web"].hdd_size
+      type     = var.vms_resources["web"].hdd_type
     }
   }
   scheduling_policy {
@@ -46,10 +59,12 @@ resource "yandex_compute_instance" "platform" {
     nat       = true
   }
 
-  metadata = {
-    serial-port-enable = 1
-    ssh-keys           = "ubuntu:${file(var.vms_ssh_public_root_key)}"
-  }
+#  metadata = {
+#    serial-port-enable = 1
+#    ssh-keys           = "ubuntu:${file(var.vms_ssh_public_root_key)}"
+#  }
+
+  metadata = local.vm_metadata
 
 }
 
@@ -60,15 +75,27 @@ resource "yandex_compute_instance" "platform_db" {
   platform_id = var.vm_db_platform_id
   zone        = var.vm_db_zone
   
+#  resources {
+#    cores         = var.vm_db_cores
+#    memory        = var.vm_db_memory
+#    core_fraction = var.vm_db_core_fraction
+#  }
   resources {
-    cores         = var.vm_db_cores
-    memory        = var.vm_db_memory
-    core_fraction = var.vm_db_core_fraction
+    cores         = var.vms_resources["db"].cores
+    memory        = var.vms_resources["db"].memory
+    core_fraction = var.vms_resources["db"].core_fraction
   }
+#  boot_disk {
+#    initialize_params {
+#      image_id = data.yandex_compute_image.ubuntu.image_id
+#    }
+#  }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
+      size     = var.vms_resources["db"].hdd_size
+      type     = var.vms_resources["db"].hdd_type
     }
   }
 
@@ -81,8 +108,12 @@ resource "yandex_compute_instance" "platform_db" {
     nat       = true
   }
 
-  metadata = {
-    serial-port-enable = 1
-    ssh-keys           = "ubuntu:${file(var.vms_ssh_public_root_key)}"
-  }
+#  metadata = {
+#    serial-port-enable = 1
+#    ssh-keys           = "ubuntu:${file(var.vms_ssh_public_root_key)}"
+#  }
+
+  metadata = local.vm_metadata
+
+
 }

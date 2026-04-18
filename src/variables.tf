@@ -62,7 +62,7 @@ variable "role_db" {
   default = "db"
 }
 
-### map-переменная для ресурсов ВМ (cores, memory, core_fraction, hdd_size, hdd_type)
+### map-переменная
 variable "vms_resources" {
   description = "Resources for each VM"
   type = map(object({
