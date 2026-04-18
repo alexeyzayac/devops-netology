@@ -64,7 +64,6 @@ variable "role_db" {
 
 ### map-переменная
 variable "vms_resources" {
-  description = "Resources for each VM"
   type = map(object({
     cores         = number
     memory        = number

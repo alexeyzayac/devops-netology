@@ -148,3 +148,50 @@ locals {
 6. Проверьте terraform plan. Изменений быть не должно.
 
 ### Решение:
+
+1. Добавлена переменная `vms_resources` (тип map(object)) со следующими полями:
+   - `cores`, `memory`, `core_fraction`, `hdd_size`, `hdd_type`
+   - Значения для `web` и `db` указаны в `default`.
+2. Добавлена переменная `metadata_common` (map(string)) с общими метаданными (без ssh-keys).
+3. В `locals.tf` создана `vm_metadata` через `merge(var.metadata_common, {"ssh-keys" = ...})`.
+4. В ресурсах `yandex_compute_instance` блоки `resources` и `boot_disk` используют `var.vms_resources["web/ db"]`.
+
+------
+
+## Дополнительное задание (со звёздочкой*)
+
+**Настоятельно рекомендуем выполнять все задания со звёздочкой.**   
+Они помогут глубже разобраться в материале. Задания со звёздочкой дополнительные, не обязательные к выполнению и никак не повлияют на получение вами зачёта по этому домашнему заданию. 
+
+------
+
+### Задание 7*
+
+Изучите содержимое файла console.tf. Откройте terraform console, выполните следующие задания: 
+
+1. Напишите, какой командой можно отобразить **второй** элемент списка test_list.
+2. Найдите длину списка test_list с помощью функции length(<имя переменной>).
+3. Напишите, какой командой можно отобразить значение ключа admin из map test_map.
+4. Напишите interpolation-выражение, результатом которого будет: "John is admin for production server based on OS ubuntu-20-04 with X vcpu, Y ram and Z virtual disks", используйте данные из переменных test_list, test_map, servers и функцию length() для подстановки значений.
+
+**Примечание**: если не догадаетесь как вычленить слово "admin", погуглите: "terraform get keys of map"
+
+В качестве решения предоставьте необходимые команды и их вывод.
+
+### Решение:
+
+```bash
+> local.test_list[1]
+"staging"
+
+> length(local.test_list)
+3
+
+> local.test_map["admin"]
+"John"
+
+> "${local.test_map["admin"]} is ${keys(local.test_map)[0]} for ${local.test_list[2]} server based on OS ${local.servers.production.image} with ${local.servers.production.cpu} vcpu, ${local.servers.production.ram} ram and ${length(local.servers.production.disks)} virtual disks"
+"John is admin for production server based on OS ubuntu-20-04 with 10 vcpu, 40 ram and 4 virtual disks"
+```
+
+------
