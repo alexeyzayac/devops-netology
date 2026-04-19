@@ -1,0 +1,18 @@
+# Local .terraform directories and files
+**/.terraform/*
+.terraform*
+
+!.terraformrc
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# own secret vars store.
+personal.auto.tfvars
+
+#secrets
+mysql_password.txt
+mysql_root_password.txt
+cloud-zayac-04-2026
+cloud-zayac-04-2026.pub
