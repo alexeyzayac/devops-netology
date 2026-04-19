@@ -13,3 +13,7 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.default_zone
 }
+
+locals {
+  public_ssh_key = file("${path.module}/../secrets/my_ed25519_key.pub")
+}
