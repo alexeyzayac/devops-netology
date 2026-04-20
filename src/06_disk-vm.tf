@@ -4,13 +4,11 @@ variable "storage_config" {
     cpu             = number
     ram             = number
     disk_volume     = number
-    image_id        = string
   })
   default = {
     cpu             = 2
     ram             = 2
     disk_volume     = 10
-    image_id        = "fd8cdbtd9eepnmm4gpne"
   }
 }
 
@@ -36,7 +34,7 @@ resource "yandex_compute_instance" "storage" {
 
   boot_disk {
     initialize_params {
-      image_id = var.storage_config.image_id
+      image_id = data.yandex_compute_image.ubuntu.image_id
       size     = var.storage_config.disk_volume
     }
   }

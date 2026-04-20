@@ -17,3 +17,7 @@ provider "yandex" {
 locals {
   public_ssh_key = file("${path.module}/../secrets/my_ed25519_key.pub")
 }
+
+data "yandex_compute_image" "ubuntu" {
+  family = "ubuntu-2404-lts-oslogin"
+}

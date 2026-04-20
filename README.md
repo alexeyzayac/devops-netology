@@ -52,11 +52,15 @@ variable "each_vm" {
 
 ### Результат:
 
-Код для данных машин описан в файлах для их создания: [04_count-vm.tf](src/04_count-vm.tf) и [05_for_each-vm.tf](src/05_for_each-vm.tf). В [00_providers.tf](src/00_providers.tf )добавлена строка содержащая ключ. 
+Код для данных машин описан в файлах для их создания: [04_count-vm.tf](src/04_count-vm.tf) и [05_for_each-vm.tf](src/05_for_each-vm.tf). В [00_providers.tf](src/00_providers.tf) добавлена строка содержащая ключ и образ ОС.
 
 ```bash
 locals {
   public_ssh_key = file("${path.module}/../secrets/my_ed25519_key.pub")
+}
+
+data "yandex_compute_image" "ubuntu" {
+  family = "ubuntu-2404-lts-oslogin"
 }
 ```
 

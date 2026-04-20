@@ -5,7 +5,6 @@ variable "each_vm" {
     cpu         = number
     ram         = number
     disk_volume = number
-    image_id    = string
   }))
   default = [
     {
@@ -13,14 +12,12 @@ variable "each_vm" {
       cpu         = 2
       ram         = 4
       disk_volume = 20
-      image_id    = "fd8cdbtd9eepnmm4gpne"
     },
     {
       vm_name     = "replica"
       cpu         = 4
       ram         = 8
       disk_volume = 30
-      image_id    = "fd8cdbtd9eepnmm4gpne"
     }
   ]
 }
@@ -40,7 +37,7 @@ resource "yandex_compute_instance" "db" {
 
   boot_disk {
     initialize_params {
-      image_id = each.value.image_id
+      image_id = data.yandex_compute_image.ubuntu.image_id
       size     = each.value.disk_volume
     }
   }

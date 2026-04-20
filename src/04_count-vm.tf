@@ -5,14 +5,12 @@ variable "web_vm_config" {
     cpu             = number
     ram             = number
     disk_volume     = number
-    image_id        = string
   })
   default = {
     instances_count = 2
     cpu             = 2
     ram             = 2
     disk_volume     = 10
-    image_id        = "fd8cdbtd9eepnmm4gpne"
   }
 }
 
@@ -31,7 +29,7 @@ resource "yandex_compute_instance" "web" {
 
   boot_disk {
     initialize_params {
-      image_id = var.web_vm_config.image_id
+      image_id = data.yandex_compute_image.ubuntu.image_id
       size     = var.web_vm_config.disk_volume
     }
   }
