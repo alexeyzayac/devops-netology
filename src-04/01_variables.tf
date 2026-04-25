@@ -8,13 +8,13 @@ variable "token" {
 variable "cloud_id" {
   description = "Идентификатор облака Яндекс Облака"
   type        = string
-  default     = "b1guknff8nknnqp3g18s"
+  default     = "b1gkcijp41up8neg1us5"
 }
 
 variable "folder_id" {
   description = "Идентификатор каталога Яндекс Облака"
   type        = string
-  default     = "b1gb00710li9ve0ujpkm"
+  default     = "b1g6420ee2tu1c99o714"
 }
 
 variable "default_zone" {

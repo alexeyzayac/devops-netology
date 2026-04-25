@@ -36,6 +36,10 @@
 terraform apply -parallelism=1 -auto-approve
 ```
 
+![img](img/screenshot_1.png)
+
+![img](img/screenshot_2.png)
+
 ------
 
 ### Задание 2

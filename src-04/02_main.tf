@@ -67,3 +67,4 @@ data "template_file" "cloudinit" {
     ssh_key = var.vms_ssh_root_key
   }
 }
+
