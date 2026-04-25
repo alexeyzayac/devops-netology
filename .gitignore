@@ -1,6 +1,10 @@
 # Local .terraform directories and files
 **/.terraform/*
 .terraform*
+secrets/
+terraform.tfvars
+*.auto.tfvars
+!.terraformrc
 
 # .tfstate files
 *.tfstate
@@ -8,9 +12,3 @@
 
 # own secret vars store.
 personal.auto.tfvars
-
-#checkov
-.external_modules
-
-#ansible
-*.cfg
