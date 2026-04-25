@@ -1,4 +1,5 @@
-#cloud-config
+### src-04/00_cloud-init.yml
+
 users:
   - name: ubuntu
     groups: sudo

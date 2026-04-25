@@ -5,6 +5,7 @@ secrets/
 terraform.tfvars
 *.auto.tfvars
 !.terraformrc
+.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate
