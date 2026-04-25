@@ -5,12 +5,10 @@ variable "env_name" {
   type        = string
 }
 
-variable "zone" {
-  description = "Зона доступности для подсети"
-  type        = string
-}
-
-variable "v4_cidr_blocks" {
-  description = "IPv4 CIDR-блок для подсети"
-  type        = string
+variable "subnets" {
+  description = "Список подсетей с зонами и CIDR-блоками"
+  type = list(object({
+    zone = string
+    cidr = string
+  }))
 }

@@ -1,11 +1,21 @@
 ### src-04/02_main.tf
 
-# Локальный модуль vpc (сеть + подсеть)
 module "vpc_dev" {
   source         = "./vpc"
   env_name       = var.vpc_name
-  zone           = var.default_zone
-  v4_cidr_blocks = var.default_cidr[0]
+  subnets = [
+    { zone = var.default_zone, cidr = var.default_cidr[0] }
+  ]
+}
+
+module "vpc_prod" {
+  source   = "./vpc"
+  env_name = "production"
+  subnets = [
+    { zone = "ru-central1-a", cidr = "10.1.1.0/24" },
+    { zone = "ru-central1-b", cidr = "10.1.2.0/24" },
+    { zone = "ru-central1-d", cidr = "10.1.3.0/24" },
+  ]
 }
 
 # ВМ для проекта marketing
@@ -18,7 +28,7 @@ module "marketing_vm" {
   instance_name  = "web-marketing"
   instance_count = 1
   image_family   = "ubuntu-2004-lts"
-  public_ip      = false
+  public_ip      = true
   labels = {
     owner   = "a.zayats"
     project = "marketing"
@@ -39,7 +49,7 @@ module "analytics_vm" {
   instance_name  = "web-analytics"
   instance_count = 1
   image_family   = "ubuntu-2004-lts"
-  public_ip      = false
+  public_ip      = true
   labels = {
     owner   = "a.zayats"
     project = "analytics"
