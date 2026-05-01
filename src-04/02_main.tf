@@ -20,7 +20,7 @@ module "vpc_prod" {
 
 # ВМ для проекта marketing
 module "marketing_vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=4d05fab828b1fcae16556a4d167134efca2fccf2"
   env_name       = "develop"
   network_id     = module.vpc_dev.network_id
   subnet_zones   = [var.default_zone]
@@ -28,7 +28,8 @@ module "marketing_vm" {
   instance_name  = "web-marketing"
   instance_count = 1
   image_family   = "ubuntu-2004-lts"
-  public_ip      = true
+  security_group_ids = [yandex_vpc_security_group.ssh.id]
+  public_ip      = false
   labels = {
     owner   = "a.zayats"
     project = "marketing"
@@ -41,7 +42,7 @@ module "marketing_vm" {
 
 # ВМ для проекта analytics
 module "analytics_vm" {
-  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=4d05fab828b1fcae16556a4d167134efca2fccf2"
   env_name       = "develop"
   network_id     = module.vpc_dev.network_id
   subnet_zones   = [var.default_zone]
@@ -49,7 +50,8 @@ module "analytics_vm" {
   instance_name  = "web-analytics"
   instance_count = 1
   image_family   = "ubuntu-2004-lts"
-  public_ip      = true
+  security_group_ids = [yandex_vpc_security_group.ssh.id]
+  public_ip      = false
   labels = {
     owner   = "a.zayats"
     project = "analytics"
