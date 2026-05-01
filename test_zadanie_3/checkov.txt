@@ -1,0 +1,52 @@
+
+       _               _
+   ___| |__   ___  ___| | _______   __
+  / __| '_ \ / _ \/ __| |/ / _ \ \ / /
+ | (__| | | |  __/ (__|   < (_) \ V /
+  \___|_| |_|\___|\___|_|\_\___/ \_/
+
+By Prisma Cloud | version: 3.2.526 
+
+terraform scan results:
+
+Passed checks: 11, Failed checks: 0, Skipped checks: 0
+
+Check: CKV_YC_11: "Ensure security group is assigned to network interface."
+        PASSED for resource: module.analytics_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:44-63
+Check: CKV_YC_4: "Ensure compute instance does not have serial console enabled."
+        PASSED for resource: module.analytics_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:44-63
+Check: CKV_YC_2: "Ensure compute instance does not have public IP."
+        PASSED for resource: module.analytics_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:44-63
+Check: CKV_YC_11: "Ensure security group is assigned to network interface."
+        PASSED for resource: module.marketing_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:22-41
+Check: CKV_YC_4: "Ensure compute instance does not have serial console enabled."
+        PASSED for resource: module.marketing_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:22-41
+Check: CKV_YC_2: "Ensure compute instance does not have public IP."
+        PASSED for resource: module.marketing_vm.yandex_compute_instance.vm[0]
+        File: /.external_modules/github.com/udjin10/yandex_compute_instance/4d05fab828b1fcae16556a4d167134efca2fccf2/main.tf:24-73
+        Calling File: /02_main.tf:22-41
+Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
+        PASSED for resource: marketing_vm
+        File: /02_main.tf:22-41
+Check: CKV_TF_2: "Ensure Terraform module sources use a tag with a version number"
+        PASSED for resource: marketing_vm
+        File: /02_main.tf:22-41
+Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
+        PASSED for resource: analytics_vm
+        File: /02_main.tf:44-63
+Check: CKV_TF_2: "Ensure Terraform module sources use a tag with a version number"
+        PASSED for resource: analytics_vm
+        File: /02_main.tf:44-63
+Check: CKV_YC_19: "Ensure security group does not contain allow-all rules."
+        PASSED for resource: yandex_vpc_security_group.ssh
+        File: /03_security_group.tf:1-17
