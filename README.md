@@ -146,3 +146,8 @@ Lock-файл создается автоматически в том же S3 bu
 
 ### Результат:
 
+[переменные с валидацией](/zadanie_4/variables.tf)
+
+![img](img/screenshot_5.png)
+
+![img](img/screenshot_6.png)
