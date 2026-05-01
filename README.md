@@ -113,3 +113,10 @@ docker run --rm --tty -v "$(pwd)/demonstration1/passwords:/checkov" -w /checkov 
 Это упрощает настройку - больше не нужно создавать отдельную базу данных (YDB в режиме DynamoDB) для хранения блокировок.
 Lock-файл создается автоматически в том же S3 bucket рядом с state-файлом с именем `<key>.lock.info`.
 
+### Результат:
+
+[Настройки backend в providers.tf](src-04/00_providers.tf)
+
+![img](img/screenshot_3.png)
+
+![img](img/screenshot_4.png)
