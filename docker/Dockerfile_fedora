@@ -1,0 +1,7 @@
+# docker build -f Dockerfile_fedora -t fedora-ansible:latest .
+
+FROM fedora:latest
+
+RUN dnf install -y python3 && dnf clean all
+
+CMD ["tail", "-f", "/dev/null"]

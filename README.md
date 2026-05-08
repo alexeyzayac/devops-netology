@@ -89,3 +89,36 @@ ansible.builtin.local                execute on controller
 6. Все изменения должны быть зафиксированы и отправлены в ваш личный репозиторий.
 
 ### Решение:
+
+#### Задание 1
+```bash
+$ ansible-vault decrypt deb/examp.yml
+$ ansible-vault decrypt el/examp.yml
+```
+
+#### Задание 2
+```bash
+ansible-vault encrypt_string
+```
+
+#### Задание 3
+```bash
+ansible-playbook -i inventory/prod.yml --limit local site.yml --ask-vault-pass
+```
+
+![img](img/screenshot_4.png)
+
+#### Задание 4
+
+[Dockerfile для создания Image Fedora](docker/Dockerfile_fedora)
+
+```bash
+$ docker run -d --name fedora fedora-ansible:latest
+$ ansible-playbook -i inventory/prod.yml --limit fedora site.yml --ask-vault-pass
+```
+
+![img](img/screenshot_5.png)
+
+#### Задание 5
+
+[Скрипт для автома](script.sh)
