@@ -1,0 +1,7 @@
+# docker build -f Dockerfile_ubuntu -t ubuntu-ansible:latest .
+
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install python3 -y
+
+CMD ["tail", "-f", "/dev/null"]
