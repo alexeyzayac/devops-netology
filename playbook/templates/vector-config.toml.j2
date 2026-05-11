@@ -1,0 +1,8 @@
+[sources.demo_logs]
+type = "demo_logs"
+format = "apache_common"
+
+[sinks.print]
+type = "console"
+inputs = ["demo_logs"]
+encoding.codec = "text"

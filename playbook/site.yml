@@ -1,14 +1,13 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
-  
+  become: true
   handlers:
     - name: Start clickhouse service
       become: true
       ansible.builtin.service:
         name: clickhouse-server
         state: restarted
-
   tasks:
     - block:
         - name: Get clickhouse distrib
@@ -22,12 +21,12 @@
             url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
     - name: Install clickhouse packages
-      become: true
       ansible.builtin.yum:
         name:
           - clickhouse-common-static-{{ clickhouse_version }}.rpm
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
+        disable_gpg_check: true
       notify: Start clickhouse service
     - name: Flush handlers
       meta: flush_handlers
@@ -36,3 +35,48 @@
       register: create_db
       failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
+  tags: clickhouse
+
+- name: Install Vector
+  hosts: vector
+  become: true
+  handlers:
+    - name: Restart vector service
+      ansible.builtin.service:
+        name: vector
+        state: restarted
+        daemon_reload: true
+      become: true
+  tasks:
+    - name: Create necessary directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ install_dir }}"
+        - "{{ config_dir }}"
+    - name: Download Vector archive
+      ansible.builtin.get_url:
+        url: "https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "/tmp/vector-{{ vector_version }}.tar.gz"
+    - name: Extract archive into install directory
+      ansible.builtin.unarchive:
+        src: "/tmp/vector-{{ vector_version }}.tar.gz"
+        dest: "{{ install_dir }}"
+        remote_src: true
+        extra_opts: [ "--strip-components=1" ]
+        creates: "{{ install_dir }}/bin/vector"
+    - name: Create symlink to /usr/local/bin
+      ansible.builtin.file:
+        src: "{{ install_dir }}/bin/vector"
+        dest: "/usr/local/bin/vector"
+        state: link
+    - name: Deploy Vector configuration from template
+      ansible.builtin.template:
+        src: vector-config.toml.j2
+        dest: "{{ config_dir }}/vector.toml"
+        mode: "0644"
+      notify: Restart vector service
+
+  tags: vector

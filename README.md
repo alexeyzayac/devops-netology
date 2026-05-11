@@ -24,3 +24,9 @@
 
 ### Решение:
 
+**Задание 1**
+
+Корректировка отражена по пути: [playbook/group_vars/clickhouse/vars.yml](playbook/group_vars/clickhouse/vars.yml)
+
+**Задание 2**
+
