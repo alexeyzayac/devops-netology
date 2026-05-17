@@ -1,0 +1,86 @@
+---
+
+- name: Установка Clickhouse
+  hosts: clickhouse
+  become: true
+  handlers:
+    - name: Запустить сервис clickhouse-server
+      ansible.builtin.service:
+        name: clickhouse-server
+        state: started
+
+  tasks:
+    - name: Скачивание DEB-пакета Clickhouse
+      ansible.builtin.get_url:
+        url: "https://packages.clickhouse.com/deb/pool/main/c/{{ item }}/{{ item }}_{{ clickhouse_version }}_amd64.deb"
+        dest: "/tmp/{{ item }}-{{ clickhouse_version }}_amd64.deb"
+        mode: '0644'
+      loop: "{{ clickhouse_packages }}"
+
+    - name: Обновление кэша пакетов APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Установка пакетов Clickhouse
+      ansible.builtin.apt:
+        deb: "/tmp/{{ item }}-{{ clickhouse_version }}_amd64.deb"
+        lock_timeout: 30
+      loop: "{{ clickhouse_packages }}"
+      notify: Запустить сервис clickhouse-server
+      changed_when: false
+
+    - name: Принудительный запуск сервиса
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ожидание готовности clickhouse-server
+      ansible.builtin.wait_for:
+        host: localhost
+        port: 9000
+        delay: 10
+        timeout: 300
+
+    - name: Создание базы данных 'logs'
+      ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
+      register: create_db
+      failed_when: create_db.rc != 0 and create_db.rc != 82
+      changed_when: create_db.rc == 0
+  tags: clickhouse
+
+- name: Установка Vector
+  hosts: vector
+  become: true
+  handlers:
+    - name: Перезапустить сервис vector
+      ansible.builtin.service:
+        name: vector
+        state: restarted
+
+  tasks:
+    - name: Скачивание DEB-пакета Vector
+      ansible.builtin.get_url:
+        url: "https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1_amd64.deb"
+        dest: "/tmp/vector-{{ vector_version }}.deb"
+        mode: '0644'
+
+    - name: Обновление кэша пакетов APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Установка пакета Vector
+      ansible.builtin.apt:
+        deb: "/tmp/vector-{{ vector_version }}.deb"
+        lock_timeout: 30
+      changed_when: false
+
+    - name: Развёртывание конфигурационного файла Vector из шаблона
+      ansible.builtin.template:
+        src: templates/vector.yaml.j2
+        dest: "{{ vector_config_path }}"
+        mode: '0644'
+      notify: Перезапустить сервис vector
+
+    - name: Принудительный запуск сервиса
+      ansible.builtin.meta: flush_handlers
+  tags: vector
+
+...
