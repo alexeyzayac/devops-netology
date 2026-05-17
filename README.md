@@ -28,5 +28,18 @@
 
 Корректировка отражена по пути: [playbook/group_vars/clickhouse/vars.yml](playbook/group_vars/clickhouse/vars.yml)
 
-**Задание 2**
+**Задание 2-3-4**
 
+[Готовый playbook](playbook/)
+
+**Задание 5**
+
+![img](img/screenshot_1.png)
+
+**Задание 6**
+
+![img](img/screenshot_2.png)
+
+**Задание 7-8-9-10**
+
+![img](img/screenshot_3.png)

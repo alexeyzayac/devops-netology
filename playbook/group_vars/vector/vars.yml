@@ -1,5 +1,6 @@
 ---
-vector_version: "0.55.0"
 
-install_dir: "/opt/vector"
-config_dir: "/etc/vector"
+vector_version: "0.44.0"
+vector_config_path: "/etc/vector/vector.yaml"
+
+...

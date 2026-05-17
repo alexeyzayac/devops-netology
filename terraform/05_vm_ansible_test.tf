@@ -1,7 +1,7 @@
 # terraform/05_vm-ansible-test.tf
 
 data "yandex_compute_image" "os" {
-  family = "centos-stream-9-oslogin"
+  family = "ubuntu-2404-lts-oslogin"
 }
 
 # vm-test
