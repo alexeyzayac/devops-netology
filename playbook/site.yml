@@ -1,6 +1,6 @@
 ---
 
-- name: Установка Clickhouse
+- name: Установка ClickHouse
   hosts: clickhouse
   become: true
   handlers:
@@ -8,9 +8,10 @@
       ansible.builtin.service:
         name: clickhouse-server
         state: started
+        enabled: true
 
   tasks:
-    - name: Скачивание DEB-пакета Clickhouse
+    - name: Скачивание DEB-пакета ClickHouse
       ansible.builtin.get_url:
         url: "https://packages.clickhouse.com/deb/pool/main/c/{{ item }}/{{ item }}_{{ clickhouse_version }}_amd64.deb"
         dest: "/tmp/{{ item }}-{{ clickhouse_version }}_amd64.deb"
@@ -27,7 +28,6 @@
         lock_timeout: 30
       loop: "{{ clickhouse_packages }}"
       notify: Запустить сервис clickhouse-server
-      changed_when: false
 
     - name: Принудительный запуск сервиса
       ansible.builtin.meta: flush_handlers
@@ -50,6 +50,11 @@
   hosts: vector
   become: true
   handlers:
+    - name: Запустить сервис vector
+      ansible.builtin.service:
+        name: vector
+        state: started
+        enabled: true
     - name: Перезапустить сервис vector
       ansible.builtin.service:
         name: vector
@@ -70,11 +75,11 @@
       ansible.builtin.apt:
         deb: "/tmp/vector-{{ vector_version }}.deb"
         lock_timeout: 30
-      changed_when: false
+      notify: Запустить сервис vector
 
     - name: Развёртывание конфигурационного файла Vector из шаблона
       ansible.builtin.template:
-        src: templates/vector.yaml.j2
+        src: vector.yaml.j2
         dest: "{{ vector_config_path }}"
         mode: '0644'
       notify: Перезапустить сервис vector
@@ -82,5 +87,55 @@
     - name: Принудительный запуск сервиса
       ansible.builtin.meta: flush_handlers
   tags: vector
+
+- name: Установка LightHouse
+  hosts: lighthouse
+  become: true
+  handlers:
+    - name: Запустить сервис nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+    - name: Перезапустить сервис nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+  pre_tasks:
+    - name: Обновление кэша пакетов APT
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Установка Git
+      ansible.builtin.apt:
+        name: git
+        state: present
+      tags: git
+
+    - name: Установка Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+      notify: Запустить сервис nginx
+      tags: nginx
+
+  tasks:
+    - name: Клонирование репозитория VKCOM/lighthouse
+      ansible.builtin.git:
+        repo: "{{ lighthouse_repo }}"
+        version: "{{ lighthouse_version }}"
+        dest: "{{ lighthouse_dir }}"
+
+    - name: Настройка конфигурации Nginx для LightHouse
+      ansible.builtin.template:
+        src: lighthouse_nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+        mode: '0644'
+      notify: Перезапустить сервис nginx
+
+    - name: Принудительный запуск сервиса
+      ansible.builtin.meta: flush_handlers
+  tags: lighthouse
 
 ...

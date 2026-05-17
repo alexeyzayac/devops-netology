@@ -3,7 +3,7 @@
 clickhouse:
   hosts:
     clickhouse-01:
-      ansible_host: 89.169.143.112
+      ansible_host: 93.77.182.125
       ansible_python_interpreter: /usr/bin/python3
 vector:
   hosts:
@@ -13,7 +13,7 @@ vector:
 lighthouse:
   hosts:
     lighthouse-01:
-      ansible_host: 89.169.143.112
+      ansible_host: 111.88.243.80
       ansible_python_interpreter: /usr/bin/python3
       
 ...

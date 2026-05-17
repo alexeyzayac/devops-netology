@@ -8,12 +8,12 @@ variable "flow" {
 
 variable "yandex_cloud_id" {
   type        = string
-  default     = "b1guknff8nknnqp3g18s"
+  default     = "b1g6agb0n814nehr1fre"
   description = "Уникальный идентификатор облака в Yandex Cloud"
 }
 
 variable "yandex_folder_id" {
   type        = string
-  default     = "b1gb00710li9ve0ujpkm"
+  default     = "b1gdi9ob4is7cn8v4mu7"
   description = "Уникальный идентификатор каталога внутри облака Yandex Cloud"
 }
