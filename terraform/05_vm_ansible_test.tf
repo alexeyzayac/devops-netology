@@ -4,10 +4,15 @@ data "yandex_compute_image" "os" {
   family = "ubuntu-2404-lts-oslogin"
 }
 
-# vm-test
-resource "yandex_compute_instance" "vm_ansible_test" {
-  name        = "vm-ansible-test"
-  hostname    = "vm-ansible-test"
+locals {
+  vm_names = ["clickhouse ", "vector", "lighthouse"]
+}
+
+resource "yandex_compute_instance" "vm_ansible" {
+  for_each = toset(local.vm_names)
+
+  name        = "${each.key}-vm"
+  hostname    = "${each.key}-vm"
   platform_id = "standard-v3"
   zone        = "ru-central1-a"
 
