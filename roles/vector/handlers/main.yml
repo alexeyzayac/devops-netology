@@ -1,0 +1,14 @@
+---
+
+- name: Запустить сервис vector
+  ansible.builtin.service:
+    name: vector
+    state: started
+    enabled: true
+
+- name: Перезапустить сервис vector
+  ansible.builtin.service:
+    name: vector
+    state: restarted
+
+...

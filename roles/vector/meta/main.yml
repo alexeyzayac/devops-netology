@@ -1,0 +1,20 @@
+---
+
+galaxy_info:
+  author: Alexey Zayac
+  description: This role install vector
+  company: Netology
+  license: MIT
+
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+      - all
+
+  galaxy_tags:
+   - vector
+
+dependencies: []
+
+...

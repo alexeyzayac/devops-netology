@@ -1,0 +1,53 @@
+---
+
+- name: Обновление кэша пакетов APT
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - lighthouse
+    - system
+
+- name: Установка Git
+  ansible.builtin.apt:
+    name: git
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - lighthouse
+    - packages
+
+- name: Установка Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  when: ansible_os_family == "Debian"
+  notify: Запустить сервис nginx
+  tags:
+    - lighthouse
+    - packages
+
+- name: Клонирование репозитория VKCOM/lighthouse
+  ansible.builtin.git:
+    repo: "{{ lighthouse_repo }}"
+    version: "{{ lighthouse_version }}"
+    dest: "{{ lighthouse_dir }}"
+  tags:
+    - lighthouse
+
+- name: Настройка конфигурации Nginx для LightHouse
+  ansible.builtin.template:
+    src: lighthouse_nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+  notify: Перезапустить сервис nginx
+  tags:
+    - lighthouse
+    - nginx_config
+
+- name: Принудительный запуск сервиса
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - lighthouse
+
+...
