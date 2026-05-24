@@ -1,0 +1,11 @@
+---
+
+- name: Развертывание стека мониторинга
+  hosts: all
+  become: true
+  roles:
+    - clickhouse
+    - vector
+    - lighthouse
+
+...

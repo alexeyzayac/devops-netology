@@ -1,0 +1,14 @@
+---
+
+- name: Запустить сервис nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Перезапустить сервис nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+...

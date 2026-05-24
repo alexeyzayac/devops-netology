@@ -5,7 +5,7 @@ data "yandex_compute_image" "os" {
 }
 
 locals {
-  vm_names = ["clickhouse ", "vector", "lighthouse"]
+  vm_names = ["test-monitoring"]
 }
 
 resource "yandex_compute_instance" "vm_ansible" {
