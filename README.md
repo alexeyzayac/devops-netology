@@ -15,9 +15,11 @@ pipx install molecule --force
 pipx inject molecule molecule_docker molecule_podman --force
 ansible-galaxy collection install community.docker -p ~/.ansible/collections --force
 ansible-galaxy collection install ansible.posix -p ~/.ansible/collections --force
+
+docker pull aragast/netology
 ```
 
-**Тестирование выполнялось на сборках [Dockerfile](docker/)**
+### Тестирование выполнялось на сборках [Dockerfile](docker/)
 
 ## Основная часть
 
@@ -38,6 +40,8 @@ ansible-galaxy collection install ansible.posix -p ~/.ansible/collections --forc
 
 ## Результат:
 
+### [Тэг в репозитории Vector](https://github.com/alexeyzayac/ansible-vector/releases/tag/0.0.3)
+
 ![img](img/screenshot_1.png)
 
 ![img](img/screenshot_2.png)
@@ -57,3 +61,13 @@ ansible-galaxy collection install ansible.posix -p ~/.ansible/collections --forc
 9. Добавьте новый тег на коммит с рабочим сценарием в соответствии с семантическим версионированием.
 
 После выполнения у вас должно получится два сценария molecule и один tox.ini файл в репозитории. Не забудьте указать в ответе теги решений Tox и Molecule заданий. В качестве решения пришлите ссылку на  ваш репозиторий и скриншоты этапов выполнения задания. 
+
+## Результат:
+
+```bash
+docker run --rm --privileged=True -v $(pwd):/opt/vector-role -w /opt/vector-role -it aragast/netology:latest /bin/bash
+```
+
+### [Тэг в репозитории Vector](https://github.com/alexeyzayac/ansible-vector/releases/tag/0.0.4)
+
+![img](img/screenshot_5.png)
