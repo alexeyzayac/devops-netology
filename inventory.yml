@@ -1,5 +1,0 @@
-all:
-  hosts:
-    test-monitoring:
-      ansible_host: 51.250.83.122
-      ansible_user: localadmin
