@@ -19,7 +19,9 @@ ansible-galaxy collection install ansible.posix -p ~/.ansible/collections --forc
 docker pull aragast/netology
 ```
 
-### Тестирование выполнялось на сборках [Dockerfile](docker/)
+### [Репозитории Vector](https://github.com/alexeyzayac/ansible-vector)
+
+### Тестирование Molecule выполнялось на сборках [Dockerfile](docker/)
 
 ## Основная часть
 
