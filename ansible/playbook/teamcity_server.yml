@@ -1,0 +1,45 @@
+---
+
+- name: Настройка TeamCity Server
+  hosts: teamcity_servers
+  become: false
+  vars:
+    compose_file: /home/localadmin/docker-compose.yml
+  tasks:
+    - name: Проверка Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+      become: true
+
+    - name: Создать docker-compose.yml для TeamCity Server
+      ansible.builtin.copy:
+        dest: "{{ compose_file }}"
+        owner: localadmin
+        group: localadmin
+        mode: '0644'
+        content: |
+          version: "3"
+          services:
+            teamcity:
+              image: jetbrains/teamcity-server
+              restart: unless-stopped
+              volumes:
+                - {{ teamcity_data_dir }}:/data/teamcity_server/datadir
+                - {{ teamcity_logs_dir }}:/opt/teamcity/logs
+              ports:
+                - "{{ teamcity_server_port }}:8111"
+
+    - name: Запустить TeamCity Server через docker compose
+      ansible.builtin.shell:
+        cmd: docker compose up -d
+        chdir: /home/localadmin
+      register: result
+      changed_when: "'Starting' in result.stdout or 'Created' in result.stdout"
+
+    - name: Вывести информацию о запуске
+      ansible.builtin.debug:
+        msg: "TeamCity Server запущен на порту {{ teamcity_server_port }}"
+
+...

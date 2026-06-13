@@ -1,0 +1,10 @@
+---
+
+- import_playbook: playbook/teamcity_server.yml
+  tags: t-server
+- import_playbook: playbook/teamcity_agent.yml
+  tags: t-agent
+- import_playbook: playbook/nexus.yml
+  tags: nexus
+
+...

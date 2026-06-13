@@ -1,0 +1,53 @@
+---
+
+- name: Настройка TeamCity Agent
+  hosts: teamcity_agents
+  become: false
+  vars:
+    compose_file: /home/localadmin/docker-compose.yml
+    teamcity_server_ip: "{{ hostvars['teamcity-server']['ansible_host'] }}"
+  tasks:
+    - name: Убедиться, что Docker установлен и запущен
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+      become: true
+
+    - name: Создать docker-compose.yml для TeamCity Agent
+      ansible.builtin.copy:
+        dest: "{{ compose_file }}"
+        owner: localadmin
+        group: localadmin
+        mode: '0644'
+        content: |
+          version: "3"
+          services:
+            teamcity-agent:
+              image: jetbrains/teamcity-agent
+              restart: unless-stopped
+              volumes:
+                - /home/localadmin/teamcity/agent/:/data/teamcity_agent/conf
+              environment:
+                SERVER_URL: "http://{{ teamcity_server_ip }}:8111"
+
+    - name: Создать директорию для конфигурации агента (если нет)
+      ansible.builtin.file:
+        path: /home/localadmin/teamcity/agent
+        state: directory
+        owner: localadmin
+        group: localadmin
+        mode: '0755'
+
+    - name: Запустить TeamCity Agent через docker compose
+      ansible.builtin.shell:
+        cmd: docker compose up -d
+        chdir: /home/localadmin
+      register: result
+      changed_when: "'Starting' in result.stdout or 'Created' in result.stdout"
+
+    - name: Вывести сообщение
+      ansible.builtin.debug:
+        msg: "TeamCity Agent подключился к серверу {{ teamcity_server_ip }}"
+
+...
