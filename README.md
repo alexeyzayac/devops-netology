@@ -69,7 +69,7 @@
 
 ![img](img/screenshot_10.png)
 
-**Задание 16-17-18:**
+**Задание 16-17-18-19:**
 
 ![img](img/screenshot_11.png)
 
