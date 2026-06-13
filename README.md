@@ -15,6 +15,8 @@
 
 ![img](img/screenshot_1.png)
 
+![img](img/screenshot_2.png)
+
 ## Основная часть
 
 1. Создайте новый проект в teamcity на основе fork.
@@ -38,3 +40,37 @@
 19. В ответе пришлите ссылку на репозиторий.
 
 ### Результат:
+
+**Задание 1-2-3:**
+
+![img](img/screenshot_3.png)
+
+**Задание 4:**
+
+![img](img/screenshot_4.png)
+
+**Задание 5-6-7:**
+
+![img](img/screenshot_5.png)
+
+![img](img/screenshot_6.png)
+
+**Задание 8:**
+
+![img](img/screenshot_7.png)
+
+**Задание 9-10-11-12-13:**
+
+![img](img/screenshot_8.png)
+
+**Задание 14-15:**
+
+![img](img/screenshot_9.png)
+
+![img](img/screenshot_10.png)
+
+**Задание 16-17-18:**
+
+![img](img/screenshot_11.png)
+
+### [Ссыла на репозиторий](https://github.com/alexeyzayac/example-teamcity)
