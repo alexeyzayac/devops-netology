@@ -1,0 +1,8 @@
+---
+
+teamcity_server_port: 8111
+teamcity_data_dir: /home/localadmin/teamcity/data
+teamcity_logs_dir: /home/localadmin/teamcity/logs
+agent_conf_dir: /home/localadmin/teamcity/agent
+
+...
