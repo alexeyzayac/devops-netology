@@ -158,3 +158,7 @@ P.S.: если при запуске некоторые контейнеры б�
 [[inputs.docker]]
   endpoint = "unix:///var/run/docker.sock"
 ```
+
+### Решение:
+
+![img](img/screenshot_2.png)
