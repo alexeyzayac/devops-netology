@@ -161,4 +161,4 @@ P.S.: если при запуске некоторые контейнеры б�
 
 ### Решение:
 
-![img](img/screenshot_2.png)
+![img](img/screenshot_3.png)
