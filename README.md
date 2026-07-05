@@ -23,20 +23,6 @@ Free Cloud account имеет ограничения:
 
 ### Sentry было поднято локально с помощью [terraform](terraform/) и [ansible](ansible/)
 
-```bash
-cd /opt/sentry-self-hosted
-cat > sentry/config.yml << 'EOF'
-system.url-prefix: http://51.250.11.156:9000
-
-csrf.trusted-origins:
-  - http://51.250.11.156:9000
-CSRF_COOKIE_SECURE: false
-SESSION_COOKIE_SECURE: false
-ALLOWED_HOSTS:
-  - '*'
-EOF
-```
-
 ![img](img/screenshot_1.png)
 
 ---
@@ -50,6 +36,7 @@ EOF
 
 ### Результат: 
 
+### Команда для генерации сообщения:
 ```bash
 docker compose exec web python -c "
 import sentry_sdk
@@ -81,6 +68,6 @@ except Exception as e:
 
 ### Результат:
 
-### Поднимлось локально, алёрт настроен, но уведомления не пришли, так как не настроен smtp.
+### Поднималось локально, алёрт настроен, но уведомления не пришли, так как не настроен smtp.
 
 ![img](img/screenshot_4.png)
