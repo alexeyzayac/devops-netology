@@ -1,0 +1,69 @@
+---
+
+- name: Развернуть Sentry self-hosted
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  vars:
+    repo_url: "https://github.com/getsentry/self-hosted.git"
+    install_dir: "/opt/sentry-self-hosted"
+    sentry_version: "latest"
+    sentry_url: "http://{{ ansible_host }}:9000"
+
+  tasks:
+    - name: Клонировать и/или обновить репозиторий Sentry
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ install_dir }}"
+        force: yes
+        update: yes
+        version: "{{ sentry_version if sentry_version != 'latest' else 'HEAD' }}"
+      register: git_result
+
+    - name: Сделать install.sh исполняемым
+      ansible.builtin.file:
+        path: "{{ install_dir }}/install.sh"
+        mode: '0755'
+
+    - name: Запустить скрипт установки
+      ansible.builtin.command:
+        cmd: ./install.sh --skip-user-creation --no-report-self-hosted-issues
+        chdir: "{{ install_dir }}"
+      register: install_result
+      changed_when: false
+
+    - name: Вывести результат установки
+      ansible.builtin.debug:
+        var: install_result.stdout_lines
+      when: install_result.stdout_lines is defined
+
+    - name: Добавить настройки CSRF и URL в sentry/config.yml
+      ansible.builtin.blockinfile:
+        path: "{{ install_dir }}/sentry/config.yml"
+        block: |
+          system.url-prefix: {{ sentry_url }}
+
+          csrf.trusted-origins:
+            - {{ sentry_url }}
+          CSRF_COOKIE_SECURE: false
+          SESSION_COOKIE_SECURE: false
+          ALLOWED_HOSTS:
+            - '*'
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - SENTRY CONFIG"
+        insertafter: EOF
+        create: false
+
+    - name: Запустить все сервисы Sentry через Docker Compose
+      ansible.builtin.command:
+        cmd: docker compose up --wait --detach
+        chdir: "{{ install_dir }}"
+      register: compose_result
+      changed_when: false
+
+    - name: Вывести статус запуска контейнеров
+      ansible.builtin.debug:
+        var: compose_result.stdout_lines
+      when: compose_result.stdout_lines is defined
+
+...
