@@ -27,7 +27,7 @@
         mode: '0755'
 
     - name: Запустить скрипт установки
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: ./install.sh --skip-user-creation --no-report-self-hosted-issues < /dev/null
         chdir: "{{ install_dir }}"
       async: 1800
