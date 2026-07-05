@@ -1,62 +1,45 @@
-# Домашнее задание к занятию 2 "`Средство визуализации Grafana`" - `Заяц Алексей`
+# Домашнее задание к занятию 3 "`Система сбора логов Elastic Stack`" - `Заяц Алексей`
 
 ## Задание 1
 
-1. Используя директорию [help](./help) внутри этого домашнего задания, запустите связку prometheus-grafana.
-1. Зайдите в веб-интерфейс grafana, используя авторизационные данные, указанные в манифесте docker-compose.
-1. Подключите поднятый вами prometheus, как источник данных.
-1. Решение домашнего задания — скриншот веб-интерфейса grafana со списком подключенных Datasource.
+Вам необходимо поднять в докере и связать между собой:
 
-### Результат:
+- elasticsearch (hot и warm ноды);
+- logstash;
+- kibana;
+- filebeat.
+
+Logstash следует сконфигурировать для приёма по tcp json-сообщений.
+
+Filebeat следует сконфигурировать для отправки логов docker вашей системы в logstash.
+
+В директории [help](./help) находится манифест docker-compose и конфигурации filebeat/logstash для быстрого 
+выполнения этого задания.
+
+Результатом выполнения задания должны быть:
+
+- скриншот `docker ps` через 5 минут после старта всех контейнеров (их должно быть 5);
+- скриншот интерфейса kibana;
+- docker-compose манифест (если вы не использовали директорию help);
+- ваши yml-конфигурации для стека (если вы не использовали директорию help).
+
+### Решение: 
 
 ![img](img/screenshot_1.png)
-
----
-
-## Задание 2
-
-Изучите самостоятельно ресурсы:
-
-1. [PromQL tutorial for beginners and humans](https://valyala.medium.com/promql-tutorial-for-beginners-9ab455142085).
-1. [Understanding Machine CPU usage](https://www.robustperception.io/understanding-machine-cpu-usage).
-1. [Introduction to PromQL, the Prometheus query language](https://grafana.com/blog/2020/02/04/introduction-to-promql-the-prometheus-query-language/).
-
-Создайте Dashboard и в ней создайте Panels:
-
-- утилизация CPU для nodeexporter (в процентах, 100-idle);
-- CPULA 1/5/15;
-- количество свободной оперативной памяти;
-- количество места на файловой системе.
-
-Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
-
-### Результат:
-
-1. (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100
-2. 1 - node_load1, 2 = node_load5, 3 - node_load15
-3. node_memory_MemAvailable_bytes / 1024^3
-4. node_filesystem_avail_bytes{mountpoint="/", fstype!~"tmpfs"} / 1024^3
 
 ![img](img/screenshot_2.png)
 
 ---
 
-## Задание 3
+## Задание 2
 
-1. Создайте для каждой Dashboard подходящее правило alert — можно обратиться к первой лекции в блоке «Мониторинг».
-1. В качестве решения задания приведите скриншот вашей итоговой Dashboard.
+Перейдите в меню [создания index-patterns  в kibana](http://localhost:5601/app/management/kibana/indexPatterns/create) и создайте несколько index-patterns из имеющихся.
 
-### Результат:
+Перейдите в меню просмотра логов в kibana (Discover) и самостоятельно изучите, как отображаются логи и как производить поиск по логам.
+
+В манифесте директории help также приведенно dummy-приложение, которое генерирует рандомные события в stdout-контейнера.
+Эти логи должны порождать индекс logstash-* в elasticsearch. Если этого индекса нет — воспользуйтесь советами и источниками из раздела «Дополнительные ссылки» этого задания.
+ 
+### Решение: 
 
 ![img](img/screenshot_3.png)
-
----
-
-## Задание 4
-
-1. Сохраните ваш Dashboard.Для этого перейдите в настройки Dashboard, выберите в боковом меню «JSON MODEL». Далее скопируйте отображаемое json-содержимое в отдельный файл и сохраните его.
-1. В качестве решения задания приведите листинг этого файла.
-
-### Результат:
-
-[Dashboard](dashboard.json)

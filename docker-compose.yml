@@ -1,68 +1,124 @@
-version: '3.8'
+##Предварительно выполнить на Linux хосте команду: sudo sysctl -w vm.max_map_count=262144
+##https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144
 
+##kibana address: http://127.0.0.1:5601 будет доступно через ~1-2 мин
+
+version: '2.2'
 services:
-  prometheus:
-    image: prom/prometheus:v2.24.1
-    container_name: prometheus
-    volumes:
-      - ./prometheus:/etc/prometheus:Z
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    restart: unless-stopped
-    depends_on:
-      - nodeexporter
-    expose:
-      - 9090
-    networks:
-      - monitor-net
 
-  nodeexporter:
-    image: prom/node-exporter:v1.0.1
-    container_name: nodeexporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
-    expose:
-      - 9100
-    networks:
-      - monitor-net
-
-
-  grafana:
-    image: grafana/grafana:7.4.0
-    container_name: grafana
-    volumes:
-      - grafana_data:/var/lib/grafana
+  es-hot:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: es-hot
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-    restart: unless-stopped
-    depends_on:
-      - prometheus
+      - node.name=es-hot
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es-hot,es-warm
+      - cluster.initial_master_nodes=es-hot,es-warm
+      - node.roles=master,data_content,data_hot  
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "http.host=0.0.0.0"
+      - xpack.security.enabled=false
+    volumes:
+      - data01:/usr/share/elasticsearch/data:Z
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     ports:
-      - 3000:3000
-    expose:
-      - 3000
+      - 9200:9200
     networks:
-      - monitor-net
+      - elastic
+    depends_on:
+      - es-warm
 
-networks:
-  monitor-net:
-    driver: bridge
+  es-warm:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: es-warm
+    environment:
+      - node.name=es-warm
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es-hot,es-warm
+      - cluster.initial_master_nodes=es-hot,es-warm
+      - node.roles=master,data_warm
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - "http.host=0.0.0.0"
+    volumes:
+      - data02:/usr/share/elasticsearch/data:Z
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      - elastic
+
+  kibana:
+    image: kibana:${KIBANA_VERSION}
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es-hot:9200
+      ELASTICSEARCH_HOSTS: '["http://es-hot:9200","http://es-warm:9200"]'
+    networks:
+      - elastic
+    depends_on:
+      - es-hot
+      - es-warm
+
+  logstash:
+    image: logstash:${LOGSTASH_VERSION}
+    container_name: logstash
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    ports:
+      - 5046:5046
+      - 5044:5044
+    volumes:
+      - ./configs/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:Z
+      - ./configs/logstash.yml:/opt/logstash/config/logstash.yml:Z
+    networks:
+      - elastic
+    depends_on:
+      - es-hot
+      - es-warm
+
+  filebeat:
+    image: elastic/filebeat:${FILEBEAT_VERSION}
+    container_name: filebeat
+    privileged: true
+    user: root
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./configs/filebeat.yml:/usr/share/filebeat/filebeat.yml:Z
+      - /var/lib/docker:/var/lib/docker:Z
+      - /var/run/docker.sock:/var/run/docker.sock:Z
+    depends_on:
+      - logstash
+    networks:
+      - elastic
+
+  some_application:
+    image: library/python:${PYTHON_VERSION}
+    container_name: some_app
+    volumes:
+      - ./pinger/:/opt/:Z
+    entrypoint: python3 /opt/run.py
 
 volumes:
-  prometheus_data: {}
-  grafana_data: {}
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
