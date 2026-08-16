@@ -1,0 +1,78 @@
+---
+
+- name: Установка и настройка MicroK8s
+  hosts: all
+  become: yes
+  vars:
+    admin_user: "localadmin"
+    microk8s_channel: "stable"
+    microk8s_addons:
+      - dns
+      - ha-cluster
+      - helm
+      - helm3
+      - dashboard
+      - metrics-server
+    dashboard_version: "v2.7.0"
+    apply_dashboard_manifest: false
+
+  tasks:
+    - name: Убедиться, что snapd установлен (для Debian/Ubuntu)
+      ansible.builtin.package:
+        name: snapd
+        state: present
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Установить MicroK8s (classic) с указанием канала
+      ansible.builtin.snap:
+        name: microk8s
+        classic: yes
+        channel: "{{ microk8s_channel }}"
+      register: microk8s_install
+
+    - name: Дождаться полной готовности MicroK8s
+      ansible.builtin.command:
+        cmd: /snap/bin/microk8s status --wait-ready
+      register: ready_status
+      changed_when: false
+      until: ready_status.rc == 0
+      retries: 30
+      delay: 5
+
+    - name: Добавить пользователя {{ admin_user }} в группу microk8s
+      ansible.builtin.user:
+        name: "{{ admin_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Создать каталог .kube для {{ admin_user }}
+      ansible.builtin.file:
+        path: "/home/{{ admin_user }}/.kube"
+        state: directory
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+        mode: '0755'
+
+    - name: Получить конфигурацию MicroK8s (kubeconfig)
+      ansible.builtin.command:
+        cmd: /snap/bin/microk8s config
+      register: kubeconfig
+      changed_when: false
+
+    - name: Записать kubeconfig в файл пользователя
+      ansible.builtin.copy:
+        content: "{{ kubeconfig.stdout }}"
+        dest: "/home/{{ admin_user }}/.kube/config"
+        owner: "{{ admin_user }}"
+        group: "{{ admin_user }}"
+        mode: '0600'
+
+    - name: Включить необходимые дополнения MicroK8s
+      ansible.builtin.command:
+        cmd: "/snap/bin/microk8s enable {{ item }}"
+      loop: "{{ microk8s_addons }}"
+      register: enable_result
+      changed_when: "'already enabled' not in enable_result.stdout"
+
+
+...
