@@ -1,0 +1,14 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-zadanie-2
+spec:
+  selector:
+    app: netology-2
+  ports:
+    - port: 80
+      targetPort: 80
+
+...

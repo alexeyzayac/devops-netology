@@ -1,8 +1,8 @@
-# Домашнее задание к занятию 2 "`Базовые объекты K8S`" - `Заяц Алексей`
+# Домашнее задание к занятию 3 "`Запуск приложений в K8S`" - `Заяц Алексей`
 
 ### Цель задания
 
-В тестовой среде для работы с Kubernetes, установленной в предыдущем ДЗ, необходимо развернуть Pod с приложением и подключиться к нему со своего локального компьютера.
+В тестовой среде для работы с Kubernetes, установленной в предыдущем ДЗ, необходимо развернуть Deployment с приложением, состоящим из нескольких контейнеров, и масштабировать его.
 
 ------
 
@@ -32,9 +32,6 @@ minikube version
 
 #Для поднятия класстера
 minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
-
-#Для удаления
-minikube delete -p zayac
 ```
 
 ![img](img/screenshot_1.png)
@@ -42,54 +39,43 @@ minikube delete -p zayac
 ------
 
 ### Инструменты и дополнительные материалы, которые пригодятся для выполнения задания
-1. Описание Pod и примеры манифестов.
-2. Описание Service.
+1. [Описание](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) Deployment и примеры манифестов.
+2. [Описание](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) Init-контейнеров.
+3. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
 
 ------
 
-### Инструменты и дополнительные материалы, которые пригодятся для выполнения задания
-
-1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
-2. [Инструкция](https://kubernetes.io/ru/docs/reference/kubectl/cheatsheet/#bash) по установке автодополнения **kubectl**.
-3. [Шпаргалка](https://kubernetes.io/ru/docs/reference/kubectl/cheatsheet/) по **kubectl**.
-
-------
-
-### Задание 1. Создать Pod с именем hello-world
-
-1. Создать манифест (yaml-конфигурацию) Pod.
-2. Использовать image - gcr.io/kubernetes-e2e-test-images/echoserver:2.2.
-3. Подключиться локально к Pod с помощью kubectl port-forward и вывести значение (curl или в браузере).
+### Задание 1. Создать Deployment и обеспечить доступ к репликам приложения из другого Pod
+1. Создать Deployment приложения, состоящего из двух контейнеров — nginx и multitool. Решить возникшую ошибку.
+2. После запуска увеличить количество реплик работающего приложения до 2.
+3. Продемонстрировать количество подов до и после масштабирования.
+4. Создать Service, который обеспечит доступ до реплик приложений из п.1.
+5. Создать отдельный Pod с приложением multitool и убедиться с помощью `curl`, что из пода есть доступ до приложений из п.1.
 
 ### Решение:
 
-**[Манифест пода](kube/pod-hello-world.yaml)**
+**[Манифест для деплоймент и сервис](kube/deployment-zadanie-1.yaml)**
 
-```bash
-kubectl apply -f pod-hello-world.yaml
-kubectl port-forward pod/hello-world 8088:8080
-```
+#### Демонстрация масштабирования
 
 ![img](img/screenshot_2.png)
 
+**[Манифест для пода](kube/pod-zadanie1.yaml)**
+
+![img](img/screenshot_3.png)
+
 ------
 
-### Задание 2. Создать Service и подключить его к Pod
-1. Создать Pod с именем netology-web.
-2. Использовать image — gcr.io/kubernetes-e2e-test-images/echoserver:2.2.
-3. Создать Service с именем netology-svc и подключить к netology-web.
-4. Подключиться локально к Service с помощью kubectl port-forward и вывести значение (curl или в браузере).
+### Задание 2. Создать Deployment и обеспечить старт основного контейнера при выполнении условий
+1. Создать Deployment приложения nginx и обеспечить старт контейнера только после того, как будет запущен сервис этого приложения.
+2. Убедиться, что nginx не стартует. В качестве Init-контейнера взять busybox.
+3. Создать и запустить Service. Убедиться, что Init запустился.
+4. Продемонстрировать состояние пода до и после запуска сервиса.
 
 ### Решение:
 
-**[Манифест пода](kube/pod-netology-web.yaml)**
+**[Манифест для деплоймент](kube/deployment-zadanie-2.yaml)**
 
-**[Манифест сервиса](kube/service-netology-svc.yml)**
+**[Манифест для сервис](kube/service-zadanie-2.yaml)**
 
-```bash
-kubectl apply -f pod-netology-web.yaml
-kubectl apply -f service-netology-svc.yml
-kubectl port-forward service/netology-svc 8088:8088
-```
-
-![img](img/screenshot_3.png)
+![img](img/screenshot_4.png)
