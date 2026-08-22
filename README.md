@@ -1,23 +1,141 @@
-# Домашнее задание к занятию № "`Тема`" - `Заяц Алексей`
+# Домашнее задание к занятию 1 "`Kubernetes. Причины появления. Команда kubectl`" - `Заяц Алексей`
+
+### Цель задания
+
+Для экспериментов и валидации ваших решений вам нужно подготовить тестовую среду для работы с Kubernetes. Оптимальное решение — развернуть на рабочей машине или на отдельной виртуальной машине MicroK8S.
+
+------
+
+### Чеклист готовности к домашнему заданию
+
+1. Личный компьютер с ОС Linux или MacOS 
+
+или
+
+2. ВМ c ОС Linux в облаке либо ВМ на локальной машине для установки MicroK8S  
+
+------
+
+### Инструкция к заданию
+
+1. Установка MicroK8S:
+    - sudo apt update,
+    - sudo apt install snapd,
+    - sudo snap install microk8s --classic,
+    - добавить локального пользователя в группу `sudo usermod -a -G microk8s $USER`,
+    - изменить права на папку с конфигурацией `sudo chown -f -R $USER ~/.kube`.
+
+2. Полезные команды:
+    - проверить статус `microk8s status --wait-ready`;
+    - подключиться к microK8s и получить информацию можно через команду `microk8s command`, например, `microk8s kubectl get nodes`;
+    - включить addon можно через команду `microk8s enable`; 
+    - список addon `microk8s status`;
+    - вывод конфигурации `microk8s config`;
+    - проброс порта для подключения локально `microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443`.
+
+3. Настройка внешнего подключения:
+    - отредактировать файл /var/snap/microk8s/current/certs/csr.conf.template
+    ```shell
+    # [ alt_names ]
+    # Add
+    # IP.4 = 123.45.67.89
+    ```
+    - обновить сертификаты `sudo microk8s refresh-certs --cert front-proxy-client.crt`.
+
+4. Установка kubectl:
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl;
+    - chmod +x ./kubectl;
+    - sudo mv ./kubectl /usr/local/bin/kubectl;
+    - настройка автодополнения в текущую сессию `bash source <(kubectl completion bash)`;
+    - добавление автодополнения в командную оболочку bash `echo "source <(kubectl completion bash)" >> ~/.bashrc`.
+
+------
+
+### Инструменты и дополнительные материалы, которые пригодятся для выполнения задания
+
+1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
+2. [Инструкция](https://kubernetes.io/ru/docs/reference/kubectl/cheatsheet/#bash) по установке автодополнения **kubectl**.
+3. [Шпаргалка](https://kubernetes.io/ru/docs/reference/kubectl/cheatsheet/) по **kubectl**.
+
+------
+
+### Задание 1. Установка MicroK8S
+
+1. Установить MicroK8S на локальную машину или на удалённую виртуальную машину.
+2. Установить dashboard.
+3. Сгенерировать сертификат для подключения к внешнему ip-адресу.
+
+### Решение:
+
+### 1.1:
+
+**В данной [playbook](ansible/microk8s_install.yml) предоставлена установка MicroK8S включая адоны.**
+
+### 1.2: 
+```bash
+microk8s kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+microk8s kubectl get pods -n kubernetes-dashboard
+```
+
+### 1.3:
+```bash
+sudo nano /var/snap/microk8s/current/certs/csr.conf.template
+
+# Добавить строку
+    IP.4 = 93.77.191.173
+
+sudo microk8s refresh-certs --cert front-proxy-client.crt
+microk8s stop
+microk8s start
+microk8s kubectl get nodes -o wide
+```
+
+------
+
+### Задание 2. Установка и настройка локального kubectl
+1. Установить на локальную машину kubectl.
+2. Настроить локально подключение к кластеру.
+3. Подключиться к дашборду с помощью port-forward.
+
+### Решение:
+
+### 2.1:
+```bash
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version
+```
 
 
-### Инструкция по выполнению домашнего задания
+### 2.2:
+```bash
+nano ~/.kube/config
 
-   1. Сделайте `fork` данного репозитория к себе в Github и переименуйте его по названию или номеру занятия, например, https://github.com/имя-вашего-репозитория/git-hw или  https://github.com/имя-вашего-репозитория/7-1-ansible-hw).
-   2. Выполните клонирование данного репозитория к себе на ПК с помощью команды `git clone`.
-   3. Выполните домашнее задание и заполните у себя локально этот файл README.md:
-      - впишите вверху название занятия и вашу фамилию и имя
-      - в каждом задании добавьте решение в требуемом виде (текст/код/скриншоты/ссылка)
-      - для корректного добавления скриншотов воспользуйтесь [инструкцией "Как вставить скриншот в шаблон с решением](https://github.com/netology-code/sys-pattern-homework/blob/main/screen-instruction.md)
-      - при оформлении используйте возможности языка разметки md (коротко об этом можно посмотреть в [инструкции  по MarkDown](https://github.com/netology-code/sys-pattern-homework/blob/main/md-instruction.md))
-   4. После завершения работы над домашним заданием сделайте коммит (`git commit -m "comment"`) и отправьте его на Github (`git push origin`);
-   5. Для проверки домашнего задания преподавателем в личном кабинете прикрепите и отправьте ссылку на решение в виде md-файла в вашем Github.
-   6. Любые вопросы по выполнению заданий спрашивайте в чате учебной группы и/или в разделе “Вопросы по заданию” в личном кабинете.
-   
-Желаем успехов в выполнении домашнего задания!
-   
-### Дополнительные материалы, которые могут быть полезны для выполнения задания
+# Изменить строку
+    server: https://93.77.191.173:16443
 
-1. [Руководство по оформлению Markdown файлов](https://gist.github.com/Jekins/2bf2d0638163f1294637#Code)
+kubectl get nodes
+```
 
----
+
+### 2.3:
+```bash
+microk8s kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 10443:443 # 1 терминал ssh
+ssh -i secrets/cloud-zayac-06-2026 -L 10443:localhost:10443 localadmin@93.77.191.173 # 2 терминал ssh
+
+# Создать сервисный аккаунт
+microk8s kubectl create serviceaccount dashboard-admin -n kubernetes-dashboard
+
+# Назначить права cluster-admin
+microk8s kubectl create clusterrolebinding dashboard-admin-binding \
+  --clusterrole=cluster-admin \
+  --serviceaccount=kubernetes-dashboard:dashboard-admin
+
+# Генерация временного токена
+microk8s kubectl create token dashboard-admin -n kubernetes-dashboard
+```
+
+![img](img/screenshot_1.png)
+
+![img](img/screenshot_2.png)
