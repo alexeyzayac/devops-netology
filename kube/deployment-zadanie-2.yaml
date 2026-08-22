@@ -1,0 +1,27 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-zadanie-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netology-2
+  template:
+    metadata:
+      labels:
+        app: netology-2
+    spec:
+      initContainers:
+        - name: wait-for-service
+          image: busybox:latest
+          command: ['sh', '-c', 'until nslookup service-zadanie-2.default.svc.cluster.local; do echo "Waiting for service-zadanie-2"; sleep 3; done']
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+
+...
