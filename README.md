@@ -83,6 +83,7 @@ kubectl port-forward pod/hello-world 8088:8080
 ### Решение:
 
 **[Манифест пода](kube/pod-netology-web.yaml)**
+
 **[Манифест сервиса](kube/service-netology-svc.yml)**
 
 ```bash
