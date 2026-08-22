@@ -56,7 +56,7 @@ minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zay
 
 **[Манифест для деплоймент и сервис](kube/deployment-zadanie-1.yaml)**
 
-#### Демонстрация масштабирования
+#### Демонстрация масштабирования:
 
 ![img](img/screenshot_2.png)
 
