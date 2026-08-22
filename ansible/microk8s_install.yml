@@ -74,5 +74,4 @@
       register: enable_result
       changed_when: "'already enabled' not in enable_result.stdout"
 
-
 ...
