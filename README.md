@@ -1,8 +1,13 @@
-# Домашнее задание к занятию 3 "`Запуск приложений в K8S`" - `Заяц Алексей`
+# Домашнее задание к занятию 4 "`Сетевое взаимодействие в Kubernetes`" - `Заяц Алексей`
 
 ### Цель задания
 
-В тестовой среде для работы с Kubernetes, установленной в предыдущем ДЗ, необходимо развернуть Deployment с приложением, состоящим из нескольких контейнеров, и масштабировать его.
+Научиться настраивать доступ к приложениям в Kubernetes:
+
+* Внутри кластера через Service (ClusterIP, NodePort).
+* Снаружи кластера через Ingress.
+
+Это задание поможет вам освоить базовые принципы сетевого взаимодействия в Kubernetes — ключевого навыка для работы с кластерами. На практике Service и Ingress используются для доступа к приложениям, балансировки нагрузки и маршрутизации трафика. Понимание этих механизмов поможет вам упростить управление сервисами в рабочих окружениях и снизит риски ошибок при развёртывании.
 
 ------
 
@@ -11,6 +16,20 @@
 1. Установленное k8s-решение (например, MicroK8S).
 2. Установленный локальный kubectl.
 3. Редактор YAML-файлов с подключенным Git-репозиторием.
+
+### Инструменты, которые пригодятся для выполнения задания
+
+1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
+2. [Инструкция](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download) по установке Minikube. 
+3. [Инструкция](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)по установке kubectl.
+4. [Инструкция](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) по установке VS Code
+
+### Дополнительные материалы, которые пригодятся для выполнения задания
+
+1. [Описание](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) Deployment и примеры манифестов.
+2. [Описание](https://kubernetes.io/docs/concepts/services-networking/service/) Описание Service.
+3. [Описание](https://kubernetes.io/docs/concepts/services-networking/ingress/) Ingress.
+4. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
 
 ### Решение:
 
@@ -32,6 +51,9 @@ minikube version
 
 #Для поднятия класстера
 minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
+
+#Для включения ингресс
+minikube -p zayac addons enable ingress
 ```
 
 ![img](img/screenshot_1.png)
@@ -45,37 +67,92 @@ minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zay
 
 ------
 
-### Задание 1. Создать Deployment и обеспечить доступ к репликам приложения из другого Pod
-1. Создать Deployment приложения, состоящего из двух контейнеров — nginx и multitool. Решить возникшую ошибку.
-2. После запуска увеличить количество реплик работающего приложения до 2.
-3. Продемонстрировать количество подов до и после масштабирования.
-4. Создать Service, который обеспечит доступ до реплик приложений из п.1.
-5. Создать отдельный Pod с приложением multitool и убедиться с помощью `curl`, что из пода есть доступ до приложений из п.1.
+### Задание 1. Настройка Service (ClusterIP и NodePort)
+
+### **Задача**
+Развернуть приложение из двух контейнеров (`nginx` и `multitool`) и обеспечить доступ к ним:
+- Внутри кластера через **ClusterIP**.
+- Снаружи через **NodePort**.
+
+### **Шаги выполнения**
+
+1. **Создать Deployment** с двумя контейнерами:
+   - `nginx` (порт `80`).
+   - `multitool` (порт `8080`).
+   - Количество реплик: `3`.
+
+2. **Создать Service типа ClusterIP**, который:
+   - Открывает `nginx` на порту `9001`.
+   - Открывает `multitool` на порту `9002`.
+
+3. **Проверить доступность** изнутри кластера:
+```bash
+ kubectl run test-pod --image=wbitt/network-multitool --rm -it -- sh
+ curl <service-name>:9001 # Проверить nginx
+ curl <service-name>:9002 # Проверить multitool
+```
+
+4. **Создать Service типа NodePort** для доступа к `nginx` снаружи.
+
+5. **Проверить доступ** с локального компьютера:
+```bash
+ curl <node-ip>:<node-port>
+   ```
+ или через браузер.
 
 ### Решение:
 
-**[Манифест для деплоймент и сервис](kube/deployment-zadanie-1.yaml)**
+**[Манифест для деплоймент](kube/zadanie_1/deployment-multi-container.yaml)**
 
-#### Демонстрация масштабирования:
+**[Манифест для сервис (clasterip)](kube/zadanie_1/service-clusterip.yaml)**
 
 ![img](img/screenshot_2.png)
 
-**[Манифест для пода](kube/pod-zadanie1.yaml)**
+**[Манифест для сервис (nodeport)](kube/zadanie_1/service-nodeport.yaml)**
 
 ![img](img/screenshot_3.png)
 
 ------
 
-### Задание 2. Создать Deployment и обеспечить старт основного контейнера при выполнении условий
-1. Создать Deployment приложения nginx и обеспечить старт контейнера только после того, как будет запущен сервис этого приложения.
-2. Убедиться, что nginx не стартует. В качестве Init-контейнера взять busybox.
-3. Создать и запустить Service. Убедиться, что Init запустился.
-4. Продемонстрировать состояние пода до и после запуска сервиса.
+### Задание 2. Настройка Ingress
+
+## **Задача**
+Развернуть два приложения (`frontend` и `backend`) и обеспечить доступ к ним через **Ingress** по разным путям.
+
+### **Шаги выполнения**
+
+1. **Развернуть два Deployment**:
+   - `frontend` (образ `nginx`).
+   - `backend` (образ `wbitt/network-multitool`).
+
+2. **Создать Service** для каждого приложения.
+
+3. **Включить Ingress-контроллер**:
+```bash
+ microk8s enable ingress
+   ```
+
+4. **Создать Ingress**, который:
+   - Открывает `frontend` по пути `/`.
+   - Открывает `backend` по пути `/api`.
+
+5. **Проверить доступность**:
+```bash
+ curl <host>/
+ curl <host>/api
+   ```
+ или через браузер.
 
 ### Решение:
 
-**[Манифест для деплоймент](kube/deployment-zadanie-2.yaml)**
+**[Манифест для деплоймент (back)](kube/zadanie_2/deployment-backend.yaml)**
 
-**[Манифест для сервис](kube/service-zadanie-2.yaml)**
+**[Манифест для деплоймент (front)](kube/zadanie_2/deployment-frontend.yaml)**
+
+**[Манифест для сервиса (back)](kube/zadanie_2/service-backend.yaml)**
+
+**[Манифест для сервиса (front)](kube/zadanie_2/service-frontend.yaml)**
+
+**[Манифест для ингресс](kube/zadanie_2/ingress.yaml)**
 
 ![img](img/screenshot_4.png)
