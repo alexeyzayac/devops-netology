@@ -1,13 +1,13 @@
-# Домашнее задание к занятию 4 "`Сетевое взаимодействие в Kubernetes`" - `Заяц Алексей`
+# Домашнее задание к занятию 5 "`Сетевое взаимодействие в Kubernetes`" - `Заяц Алексей`
 
 ### Цель задания
 
-Научиться настраивать доступ к приложениям в Kubernetes:
+Научиться работать с хранилищами в тестовой среде Kubernetes:
+- обеспечить обмен файлами между контейнерами пода;
+- создавать **PersistentVolume** (PV) и использовать его в подах через **PersistentVolumeClaim** (PVC);
+- объявлять свой **StorageClass** (SC) и монтировать его в под через **PVC**.
 
-* Внутри кластера через Service (ClusterIP, NodePort).
-* Снаружи кластера через Ingress.
-
-Это задание поможет вам освоить базовые принципы сетевого взаимодействия в Kubernetes — ключевого навыка для работы с кластерами. На практике Service и Ingress используются для доступа к приложениям, балансировки нагрузки и маршрутизации трафика. Понимание этих механизмов поможет вам упростить управление сервисами в рабочих окружениях и снизит риски ошибок при развёртывании.
+Это задание поможет вам освоить базовые принципы взаимодействия с хранилищами в Kubernetes — одного из ключевых навыков для работы с кластерами. На практике Volume, PV, PVC используются для хранения данных независимо от пода, обмена данными между подами и контейнерами внутри пода. Понимание этих механизмов поможет вам упростить проектирование слоя данных для приложений, разворачиваемых в кластере k8s.
 
 ------
 
@@ -17,19 +17,22 @@
 2. Установленный локальный kubectl.
 3. Редактор YAML-файлов с подключенным Git-репозиторием.
 
+------
+
 ### Инструменты, которые пригодятся для выполнения задания
 
 1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
 2. [Инструкция](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download) по установке Minikube. 
-3. [Инструкция](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)по установке kubectl.
+3. [Инструкция](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) по установке kubectl.
 4. [Инструкция](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) по установке VS Code
 
 ### Дополнительные материалы, которые пригодятся для выполнения задания
-
-1. [Описание](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) Deployment и примеры манифестов.
-2. [Описание](https://kubernetes.io/docs/concepts/services-networking/service/) Описание Service.
-3. [Описание](https://kubernetes.io/docs/concepts/services-networking/ingress/) Ingress.
-4. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
+1. [Описание Volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
+2. [Описание Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
+3. [Описание PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).
+4. [Описание PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims).
+5. [Описание StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/).
+6. [Описание Multitool](https://github.com/wbitt/Network-MultiTool).
 
 ### Решение:
 
@@ -52,107 +55,70 @@ minikube version
 #Для поднятия класстера
 minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
 
-#Для включения ингресс
-minikube -p zayac addons enable ingress
+#Для подключения по ssh
+minikube ssh -p zayac
 ```
 
 ![img](img/screenshot_1.png)
 
 ------
 
-### Инструменты и дополнительные материалы, которые пригодятся для выполнения задания
-1. [Описание](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) Deployment и примеры манифестов.
-2. [Описание](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) Init-контейнеров.
-3. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
+### Задание 1. 
 
-------
+Создать Deployment приложения, состоящего из двух контейнеров, обменивающихся данными.
 
-### Задание 1. Настройка Service (ClusterIP и NodePort)
-
-### **Задача**
-Развернуть приложение из двух контейнеров (`nginx` и `multitool`) и обеспечить доступ к ним:
-- Внутри кластера через **ClusterIP**.
-- Снаружи через **NodePort**.
-
-### **Шаги выполнения**
-
-1. **Создать Deployment** с двумя контейнерами:
-   - `nginx` (порт `80`).
-   - `multitool` (порт `8080`).
-   - Количество реплик: `3`.
-
-2. **Создать Service типа ClusterIP**, который:
-   - Открывает `nginx` на порту `9001`.
-   - Открывает `multitool` на порту `9002`.
-
-3. **Проверить доступность** изнутри кластера:
-```bash
- kubectl run test-pod --image=wbitt/network-multitool --rm -it -- sh
- curl <service-name>:9001 # Проверить nginx
- curl <service-name>:9002 # Проверить multitool
-```
-
-4. **Создать Service типа NodePort** для доступа к `nginx` снаружи.
-
-5. **Проверить доступ** с локального компьютера:
-```bash
- curl <node-ip>:<node-port>
-   ```
- или через браузер.
+### Шаги выполнения
+1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool.
+2. Настроить busybox на запись данных каждые 5 секунд в некий файл в общей директории.
+3. Обеспечить возможность чтения файла контейнером multitool.
 
 ### Решение:
 
-**[Манифест для деплоймент](kube/zadanie_1/deployment-multi-container.yaml)**
+**[Манифест для деплоймента](kube/zadanie_1/containers-data-exchange.yaml)**
 
-**[Манифест для сервис (clasterip)](kube/zadanie_1/service-clusterip.yaml)**
+**Через emptyDir:**
 
 ![img](img/screenshot_2.png)
-
-**[Манифест для сервис (nodeport)](kube/zadanie_1/service-nodeport.yaml)**
 
 ![img](img/screenshot_3.png)
 
 ------
 
-### Задание 2. Настройка Ingress
+### Задание 2. 
 
-## **Задача**
-Развернуть два приложения (`frontend` и `backend`) и обеспечить доступ к ним через **Ingress** по разным путям.
+Создать Deployment приложения, использующего локальный PV, созданный вручную.
 
-### **Шаги выполнения**
-
-1. **Развернуть два Deployment**:
-   - `frontend` (образ `nginx`).
-   - `backend` (образ `wbitt/network-multitool`).
-
-2. **Создать Service** для каждого приложения.
-
-3. **Включить Ingress-контроллер**:
-```bash
- microk8s enable ingress
-   ```
-
-4. **Создать Ingress**, который:
-   - Открывает `frontend` по пути `/`.
-   - Открывает `backend` по пути `/api`.
-
-5. **Проверить доступность**:
-```bash
- curl <host>/
- curl <host>/api
-   ```
- или через браузер.
+### Шаги выполнения
+1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool, использующего созданный ранее PVC
+2. Создать PV и PVC для подключения папки на локальной ноде, которая будет использована в поде.
+3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд. 
+4. Удалить Deployment и PVC. Продемонстрировать, что после этого произошло с PV. Пояснить, почему. (Используйте команду `kubectl describe pv`).
+5. Продемонстрировать, что файл сохранился на локальном диске ноды. Удалить PV.  Продемонстрировать, что произошло с файлом после удаления PV. Пояснить, почему.
 
 ### Решение:
 
-**[Манифест для деплоймент (back)](kube/zadanie_2/deployment-backend.yaml)**
-
-**[Манифест для деплоймент (front)](kube/zadanie_2/deployment-frontend.yaml)**
-
-**[Манифест для сервиса (back)](kube/zadanie_2/service-backend.yaml)**
-
-**[Манифест для сервиса (front)](kube/zadanie_2/service-frontend.yaml)**
-
-**[Манифест для ингресс](kube/zadanie_2/ingress.yaml)**
+**[Манифест для деплоймента](kube/zadanie_2/pv-pvc.yaml)**
 
 ![img](img/screenshot_4.png)
+
+![img](img/screenshot_5.png)
+
+![img](img/screenshot_6.png)
+
+### Обьяснение:
+* При политике Retain удаление PVC переводит PV в состояние Released, а последующее удаление PV не удаляет физические файлы на хосте, поскольку hostPath — это лишь ссылка на локальную директорию, не управляемую Kubernetes.
+
+
+------
+
+### Задание 3. 
+
+Создать Deployment приложения, использующего PVC, созданный на основе StorageClass.
+
+### Шаги выполнения
+
+1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool, использующего созданный ранее PVC.
+2. Создать SC и PVC для подключения папки на локальной ноде, которая будет использована в поде.
+3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд.
+
+### Решение:
