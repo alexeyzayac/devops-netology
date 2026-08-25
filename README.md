@@ -53,7 +53,7 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 minikube version
 
 #Для поднятия класстера
-minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
+minikube start --driver=virtualbox --cpus=4 --memory=4gb --disk-size=20gb -p zayac
 
 #Для подключения по ssh
 minikube ssh -p zayac
@@ -122,3 +122,7 @@ minikube ssh -p zayac
 3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд.
 
 ### Решение:
+
+**[Манифест для деплоймента](kube/zadanie_3/sc.yaml)**
+
+![img](img/screenshot_7.png)
