@@ -75,9 +75,9 @@ minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zay
 
 ### Решение:
 
-**[Манифест для конфиг-мап](kube/configmap-web.yaml)**
+**[Манифест для configmap](kube/configmap-web.yaml)**
 
-**[Манифест для деплоймент](kube/deployment.yaml)**
+**[Манифест для deployment](kube/deployment.yaml)**
 
 ![img](img/screenshot_21.2.png)
 
@@ -99,9 +99,9 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 ### Решение:
 
-**[Манифест для секрет](kube/secret-tls.yaml)**
+**[Манифест для secret](kube/secret-tls.yaml)**
 
-**[Манифест для игресс](kube/ingress-tls.yaml)**
+**[Манифест для ingress](kube/ingress-tls.yaml)**
 
 ![img](img/screenshot_21.3.png)
 
@@ -126,3 +126,17 @@ openssl x509 -req -in developer.csr -CA {CA серт вашего кластер
 4. **Проверить доступ**
 
 ### Решение:
+
+```bash
+openssl genrsa -out developer.key 2048
+openssl req -new -key developer.key -out developer.csr -subj "/CN=developer"
+openssl x509 -req -in developer.csr -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key -CAcreateserial -out developer.crt -days 365
+kubectl config set-credentials developer --client-certificate=developer.crt --client-key=developer.key
+kubectl config set-context developer-context --cluster=zayac --user=developer --namespace=default
+```
+
+**[Манифест для role-pod-reader](kube/role-pod-reader.yaml)**
+
+**[Манифест для rolebinding-developer](kube/rolebinding-developer.yaml)**
+
+![img](img/screenshot_21.4.png)
