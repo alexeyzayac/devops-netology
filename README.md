@@ -1,13 +1,15 @@
-# Домашнее задание к занятию 5 "`Сетевое взаимодействие в Kubernetes`" - `Заяц Алексей`
+# Домашнее задание к занятию 6 "`Настройка приложений и управление доступом в Kubernetes`" - `Заяц Алексей`
 
 ### Цель задания
 
-Научиться работать с хранилищами в тестовой среде Kubernetes:
-- обеспечить обмен файлами между контейнерами пода;
-- создавать **PersistentVolume** (PV) и использовать его в подах через **PersistentVolumeClaim** (PVC);
-- объявлять свой **StorageClass** (SC) и монтировать его в под через **PVC**.
+Научиться:
+- Настраивать конфигурацию приложений с помощью **ConfigMaps** и **Secrets**
+- Управлять доступом пользователей через **RBAC**
 
-Это задание поможет вам освоить базовые принципы взаимодействия с хранилищами в Kubernetes — одного из ключевых навыков для работы с кластерами. На практике Volume, PV, PVC используются для хранения данных независимо от пода, обмена данными между подами и контейнерами внутри пода. Понимание этих механизмов поможет вам упростить проектирование слоя данных для приложений, разворачиваемых в кластере k8s.
+Это задание поможет вам освоить ключевые механизмы Kubernetes для работы с конфигурацией и безопасностью. Эти навыки необходимы для уверенного администрирования кластеров в реальных проектах. На практике навыки используются для:
+- Хранения чувствительных данных (Secrets)
+- Гибкого управления настройками приложений (ConfigMaps) 
+- Контроля доступа пользователей и сервисов (RBAC)
 
 ------
 
@@ -16,23 +18,23 @@
 1. Установленное k8s-решение (например, MicroK8S).
 2. Установленный локальный kubectl.
 3. Редактор YAML-файлов с подключенным Git-репозиторием.
+4. Утилита openssl для генерации сертификатов
 
 ------
 
 ### Инструменты, которые пригодятся для выполнения задания
-
 1. [Инструкция](https://microk8s.io/docs/getting-started) по установке MicroK8S.
 2. [Инструкция](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download) по установке Minikube. 
 3. [Инструкция](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/) по установке kubectl.
 4. [Инструкция](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) по установке VS Code
 
 ### Дополнительные материалы, которые пригодятся для выполнения задания
-1. [Описание Volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
-2. [Описание Ephemeral Volumes](https://kubernetes.io/docs/concepts/storage/volumes/).
-3. [Описание PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).
-4. [Описание PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims).
-5. [Описание StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/).
-6. [Описание Multitool](https://github.com/wbitt/Network-MultiTool).
+1. [Описание](https://kubernetes.io/docs/concepts/configuration/secret/) Secret.
+2. [Описание](https://kubernetes.io/docs/concepts/configuration/configmap/) ConfigMap.
+3. [Описание](https://github.com/wbitt/Network-MultiTool) Multitool.
+4. [Описание](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) RBAC.
+5. [Пользователи и авторизация RBAC в Kubernetes](https://habr.com/ru/company/flant/blog/470503/).
+6. [RBAC with Kubernetes in Minikube](https://medium.com/@HoussemDellai/rbac-with-kubernetes-in-minikube-4deed658ea7b).
 
 ### Решение:
 
@@ -54,9 +56,6 @@ minikube version
 
 #Для поднятия класстера
 minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
-
-#Для подключения по ssh
-minikube ssh -p zayac
 ```
 
 ![img](img/screenshot_1.png)
@@ -65,60 +64,59 @@ minikube ssh -p zayac
 
 ### Задание 1. 
 
-Создать Deployment приложения, состоящего из двух контейнеров, обменивающихся данными.
+Развернуть приложение (nginx + multitool), решить проблему конфигурации через ConfigMap и подключить веб-страницу.
 
-### Шаги выполнения
-1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool.
-2. Настроить busybox на запись данных каждые 5 секунд в некий файл в общей директории.
-3. Обеспечить возможность чтения файла контейнером multitool.
+### **Шаги выполнения**
+1. **Создать Deployment** с двумя контейнерами
+   - `nginx`
+   - `multitool`
+3. **Подключить веб-страницу** через ConfigMap
+4. **Проверить доступность**
 
 ### Решение:
 
-**[Манифест для деплоймента](kube/zadanie_1/containers-data-exchange.yaml)**
+**[Манифест для деплоймент](kube/zadanie_1/deployment.yaml)**
 
-**Через emptyDir:**
+**[Манифест для конфиг-мап](kube/zadanie_1/configmap-web.yaml)**
 
 ![img](img/screenshot_2.png)
-
-![img](img/screenshot_3.png)
 
 ------
 
 ### Задание 2. 
 
-Создать Deployment приложения, использующего локальный PV, созданный вручную.
+Развернуть приложение с доступом по HTTPS, используя самоподписанный сертификат.
 
-### Шаги выполнения
-1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool, использующего созданный ранее PVC
-2. Создать PV и PVC для подключения папки на локальной ноде, которая будет использована в поде.
-3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд. 
-4. Удалить Deployment и PVC. Продемонстрировать, что после этого произошло с PV. Пояснить, почему. (Используйте команду `kubectl describe pv`).
-5. Продемонстрировать, что файл сохранился на локальном диске ноды. Удалить PV.  Продемонстрировать, что произошло с файлом после удаления PV. Пояснить, почему.
+### **Шаги выполнения**  
+1. **Сгенерировать SSL-сертификат**
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key -out tls.crt -subj "/CN=myapp.example.com"
+```
+2. **Создать Secret**
+3. **Настроить Ingress**
+4. **Проверить HTTPS-доступ**
 
 ### Решение:
-
-**[Манифест для деплоймента](kube/zadanie_2/pv-pvc.yaml)**
-
-![img](img/screenshot_4.png)
-
-![img](img/screenshot_5.png)
-
-![img](img/screenshot_6.png)
-
-### Обьяснение:
-* При политике Retain удаление PVC переводит PV в состояние Released, а последующее удаление PV не удаляет физические файлы на хосте, поскольку hostPath — это лишь ссылка на локальную директорию, не управляемую Kubernetes.
-
 
 ------
 
 ### Задание 3. 
 
-Создать Deployment приложения, использующего PVC, созданный на основе StorageClass.
+Создать пользователя с ограниченными правами (только просмотр логов и описания подов).
 
-### Шаги выполнения
-
-1. Создать Deployment приложения, состоящего из контейнеров busybox и multitool, использующего созданный ранее PVC.
-2. Создать SC и PVC для подключения папки на локальной ноде, которая будет использована в поде.
-3. Продемонстрировать, что контейнер multitool может читать данные из файла в смонтированной директории, в который busybox записывает данные каждые 5 секунд.
+### **Шаги выполнения**  
+1. **Включите RBAC в microk8s**
+```bash
+microk8s enable rbac
+```
+2. **Создать SSL-сертификат для пользователя**
+```bash
+openssl genrsa -out developer.key 2048
+openssl req -new -key developer.key -out developer.csr -subj "/CN={ИМЯ ПОЛЬЗОВАТЕЛЯ}"
+openssl x509 -req -in developer.csr -CA {CA серт вашего кластера} -CAkey {CA ключ вашего кластера} -CAcreateserial -out developer.crt -days 365
+```
+3. **Создать Role (только просмотр логов и описания подов) и RoleBinding**
+4. **Проверить доступ**
 
 ### Решение:
