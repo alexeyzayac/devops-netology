@@ -58,7 +58,7 @@ minikube version
 minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
 ```
 
-![img](img/screenshot_1.png)
+![img](img/screenshot_21.1.png)
 
 ------
 
@@ -79,7 +79,7 @@ minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zay
 
 **[Манифест для деплоймент](kube/deployment.yaml)**
 
-![img](img/screenshot_2.png)
+![img](img/screenshot_21.2.png)
 
 ------
 
@@ -103,7 +103,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 **[Манифест для игресс](kube/ingress-tls.yaml)**
 
-![img](img/screenshot_3.png)
+![img](img/screenshot_21.3.png)
 
 ------
 
