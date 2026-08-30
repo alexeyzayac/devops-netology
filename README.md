@@ -75,9 +75,9 @@ minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zay
 
 ### Решение:
 
-**[Манифест для деплоймент](kube/zadanie_1/deployment.yaml)**
+**[Манифест для конфиг-мап](kube/configmap-web.yaml)**
 
-**[Манифест для конфиг-мап](kube/zadanie_1/configmap-web.yaml)**
+**[Манифест для деплоймент](kube/deployment.yaml)**
 
 ![img](img/screenshot_2.png)
 
@@ -98,6 +98,12 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 4. **Проверить HTTPS-доступ**
 
 ### Решение:
+
+**[Манифест для секрет](kube/secret-tls.yaml)**
+
+**[Манифест для игресс](kube/ingress-tls.yaml)**
+
+![img](img/screenshot_3.png)
 
 ------
 
