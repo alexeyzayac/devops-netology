@@ -1,23 +1,98 @@
-# Домашнее задание к занятию № "`Тема`" - `Заяц Алексей`
+# Домашнее задание к занятию 7 "`Helm`" - `Заяц Алексей`
 
+### Цель задания
 
-### Инструкция по выполнению домашнего задания
+В тестовой среде Kubernetes необходимо установить и обновить приложения с помощью Helm.
 
-   1. Сделайте `fork` данного репозитория к себе в Github и переименуйте его по названию или номеру занятия, например, https://github.com/имя-вашего-репозитория/git-hw или  https://github.com/имя-вашего-репозитория/7-1-ansible-hw).
-   2. Выполните клонирование данного репозитория к себе на ПК с помощью команды `git clone`.
-   3. Выполните домашнее задание и заполните у себя локально этот файл README.md:
-      - впишите вверху название занятия и вашу фамилию и имя
-      - в каждом задании добавьте решение в требуемом виде (текст/код/скриншоты/ссылка)
-      - для корректного добавления скриншотов воспользуйтесь [инструкцией "Как вставить скриншот в шаблон с решением](https://github.com/netology-code/sys-pattern-homework/blob/main/screen-instruction.md)
-      - при оформлении используйте возможности языка разметки md (коротко об этом можно посмотреть в [инструкции  по MarkDown](https://github.com/netology-code/sys-pattern-homework/blob/main/md-instruction.md))
-   4. После завершения работы над домашним заданием сделайте коммит (`git commit -m "comment"`) и отправьте его на Github (`git push origin`);
-   5. Для проверки домашнего задания преподавателем в личном кабинете прикрепите и отправьте ссылку на решение в виде md-файла в вашем Github.
-   6. Любые вопросы по выполнению заданий спрашивайте в чате учебной группы и/или в разделе “Вопросы по заданию” в личном кабинете.
-   
-Желаем успехов в выполнении домашнего задания!
-   
-### Дополнительные материалы, которые могут быть полезны для выполнения задания
+------
 
-1. [Руководство по оформлению Markdown файлов](https://gist.github.com/Jekins/2bf2d0638163f1294637#Code)
+### Чеклист готовности к домашнему заданию
 
----
+1. Установленное k8s-решение (например, MicroK8S).
+2. Установленный локальный kubectl.
+3. Редактор YAML-файлов с подключенным Git-репозиторием.
+4. Установленный локальный Helm
+------
+
+### Дополнительные материалы, которые пригодятся для выполнения задания
+1. [Инструкция](https://helm.sh/docs/intro/install/) по установке Helm. [Helm completion](https://helm.sh/docs/helm/helm_completion/).
+
+### Решение:
+
+#### Уситановка kubectl
+
+```bash
+curl -LO "https://dl.k8s.io/release/v1.35.0/bin/linux/amd64/kubectl"
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version
+```
+
+#### Установка Minikube на локальный АРМ
+
+```bash
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube version
+
+#Для поднятия класстера
+minikube start --driver=virtualbox --cpus=4 --memory=8gb --disk-size=20gb -p zayac
+```
+
+![screenshot_1](./img/screenshot_1.png)
+
+------
+
+### Задание 1. 
+
+1. Необходимо упаковать приложение в чарт для деплоя в разные окружения. 
+2. Каждый компонент приложения деплоится отдельным deployment’ом или statefulset’ом.
+3. В переменных чарта измените образ приложения для изменения версии.
+
+### Решение:
+
+```bash
+helm create netology-chart
+helm template . --debug
+```
+
+**[Созданный чарт](netology-chart/)**
+
+![screenshot_2](./img/screenshot_2.png)
+
+------
+
+### Задание 2. 
+
+1. Подготовив чарт, необходимо его проверить. Запуститe несколько копий приложения.
+2. Одну версию в namespace=app1, вторую версию в том же неймспейсе, третью версию в namespace=app2.
+3. Продемонстрируйте результат.
+
+### Решение:
+
+```bash
+kubectl create namespace app1
+kubectl create namespace app2
+
+#Релиз 1
+helm install app1-v1 ./netology-chart \
+  --namespace app1 \
+  --set nginx.image.tag=1.31.4 \
+  --set replicas=1
+
+#Релиз 2
+helm install app1-v2 ./netology-chart \
+  --namespace app1 \
+  --set nginx.image.tag=1.30.4 \
+  --set replicas=1
+
+#Релиз 3
+helm install app2-v1 ./netology-chart \
+  --namespace app2 \
+  --set nginx.image.tag=1.31.4 \
+  --set replicas=1 \
+  --set service.port=8080
+
+```
+
+![screenshot_3](./img/screenshot_3.png)
