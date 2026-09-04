@@ -30,7 +30,7 @@
 
 ![screenshot_1.png](./img/screenshot_1.png)
 
-**Для развертывания кластера были написаны [playboks](./vagrant/playbook/site.yml), итог:**
+**Для развертывания кластера были написаны [playbook](./vagrant/playbook/site.yml), после ручной настройки, итог:**
 
 ![screenshot_2.png](./img/screenshot_2.png)
 
