@@ -26,11 +26,11 @@
 
 ### Решение:
 
-**Машины подняты через [Vagrant](./vagrant/Vagrantfile) в VirtualBox:**
+**Машины подняты через [Vagrant](./install-k8s-kubeadm/Vagrantfile) в VirtualBox:**
 
 ![screenshot_1.png](./img/screenshot_1.png)
 
-**Для развертывания кластера были написаны [playbook](./vagrant/playbook/site.yml), после ручной настройки, итог:**
+**Для развертывания кластера были написаны [playbook](./install-k8s-kubeadm/playbook/site.yml), после ручной настройки, итог:**
 
 ![screenshot_2.png](./img/screenshot_2.png)
 
@@ -48,3 +48,14 @@
 
 ### Решение:
 
+**Машины подняты через [Vagrant](./install-k8s-kubeadm-ha-keepalived/Vagrantfile) в VirtualBox:**
+
+![screenshot_4.png](./img/screenshot_4.png)
+
+**Для развертывания кластера были написаны [playbook](./install-k8s-kubeadm-ha-keepalived/playbook/site.yml), после ручной настройки, итог:**
+
+![screenshot_5.png](./img/screenshot_5.png)
+
+**Итог после отработки, проверка на master-node:**
+
+![screenshot_6.png](./img/screenshot_6.png)

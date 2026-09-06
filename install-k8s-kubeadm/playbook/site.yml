@@ -92,6 +92,23 @@
           state: started
       tags: k8s
 
+  post_tasks:
+    - name: Добавить автодополнение kubectl в .bashrc для root
+      ansible.builtin.lineinfile:
+        path: /root/.bashrc
+        line: 'source <(kubectl completion bash)'
+        insertafter: EOF
+      tags: [bashrc]
+
+    - name: Добавить автодополнение kubectl в .bashrc для vagrant
+      ansible.builtin.lineinfile:
+        path: /home/vagrant/.bashrc
+        line: 'source <(kubectl completion bash)'
+        insertafter: EOF
+      tags: [bashrc]
+
+#################################################################
+
 - name: Инициализация Kubernetes master-нод
   hosts: master
   become: true
@@ -99,7 +116,6 @@
   vars:
     apiserver_advertise_address: "192.168.56.10"
     pod_network_cidr: "10.244.0.0/16"
-    apiserver_cert_extra_sans: "" #curl ipinfo.io/ip
     control_plane_endpoint: "192.168.56.10"
   tasks:
     - name: Инициализация кластера
@@ -108,7 +124,6 @@
           kubeadm init
           --apiserver-advertise-address={{ apiserver_advertise_address }}
           --pod-network-cidr={{ pod_network_cidr }}
-          --apiserver-cert-extra-sans={{ apiserver_cert_extra_sans }}
           --control-plane-endpoint={{ control_plane_endpoint }}
         creates: /etc/kubernetes/admin.conf
       register: init_output
@@ -120,6 +135,8 @@
           cp /etc/kubernetes/admin.conf $HOME/.kube/config
           chown $(id -u):$(id -g) $HOME/.kube/config
       when: init_output.changed
+
+#################################################################
 
 - name: Установка сетевого плагина Flannel
   hosts: master-node
@@ -134,6 +151,8 @@
       register: flannel_result
       changed_when: '"created" in flannel_result.stdout or "configured" in flannel_result.stdout'
 
+#################################################################
+
 - name: Получить join-команду
   hosts: master
   become: true
@@ -147,6 +166,8 @@
     - name: Сохранить команду как факт для всех узлов
       ansible.builtin.set_fact:
         join_command: "{{ join_command_raw.stdout | trim }}"
+
+#################################################################
 
 - name: Присоединение worker-нод к кластеру
   hosts: worker-node*
