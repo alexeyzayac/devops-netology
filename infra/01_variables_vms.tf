@@ -62,3 +62,24 @@ variable "private_vm_resources" {
   }
   nullable = false
 }
+
+variable "ig_resources" {
+  description = "Параметры ресурсов ВМ в Instance Group"
+  type = object({
+    cores         = number
+    memory        = number
+    core_fraction = number
+    image_id      = string
+    hdd_size      = number
+    hdd_type      = string
+  })
+  default = {
+    cores         = 2
+    memory        = 2
+    core_fraction = 20
+    image_id      = "fd827b91d99psvq5fjit" # Ubuntu 20.04 с преднастроенным LAMP-стеком
+    hdd_size      = 20
+    hdd_type      = "network-hdd"
+  }
+  nullable = false
+}

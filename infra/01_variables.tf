@@ -30,3 +30,16 @@ variable "zone" {
   default     = "ru-central1-a"
   nullable    = false
 }
+
+variable "bucket_name" {
+  description = "Имя бакета Object Storage"
+  type        = string
+  nullable    = false
+}
+
+variable "image_path" {
+  description = "Путь к файлу с картинкой для загрузки в бакет"
+  type        = string
+  default     = "../bucket_img/image.jpg"
+  nullable    = false
+}

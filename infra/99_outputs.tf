@@ -19,3 +19,13 @@ output "nat_instance_internal_ip" {
   description = "Внутренний IP-адрес NAT-инстанса"
   value       = yandex_compute_instance.nat_instance.network_interface.0.ip_address
 }
+
+output "bucket_picture_url" {
+  description = "Публичный URL картинки в бакете"
+  value       = "https://${yandex_storage_bucket.picture_bucket.bucket}.storage.yandexcloud.net/picture.jpg"
+}
+
+output "nlb_public_ip" {
+  description = "Публичный IP сетевого балансировщика"
+  value       = tolist(tolist(yandex_lb_network_load_balancer.nlb.listener)[0].external_address_spec)[0].address
+}
