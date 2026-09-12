@@ -60,7 +60,7 @@ resource "yandex_compute_instance_group" "lamp_ig" {
 
   scale_policy {
     fixed_scale {
-      size = 3
+      size = var.ig_resources.fixed_scale
     }
   }
 

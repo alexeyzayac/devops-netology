@@ -66,6 +66,7 @@ variable "private_vm_resources" {
 variable "ig_resources" {
   description = "Параметры ресурсов ВМ в Instance Group"
   type = object({
+    fixed_scale   = number
     cores         = number
     memory        = number
     core_fraction = number
@@ -74,6 +75,7 @@ variable "ig_resources" {
     hdd_type      = string
   })
   default = {
+    fixed_scale   = 3
     cores         = 2
     memory        = 2
     core_fraction = 20
