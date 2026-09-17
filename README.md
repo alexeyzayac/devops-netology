@@ -48,6 +48,7 @@
 * terraform.tfvars
 
 Были созданны конфигурации:
+* 01_locals.tf
 * 06_storage.tf
 * 07_instance_group.tf
 * 08_load_balancer.tf
