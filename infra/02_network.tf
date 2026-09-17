@@ -7,7 +7,7 @@ resource "yandex_vpc_network" "main" {
 
 resource "yandex_vpc_subnet" "public" {
   description    = "Публичная подсеть для доступа в интернет"
-  name           = "public"
+  name           = "${var.flow}-public"
   zone           = var.zone
   network_id     = yandex_vpc_network.main.id
   v4_cidr_blocks = ["192.168.10.0/24"]
@@ -15,7 +15,7 @@ resource "yandex_vpc_subnet" "public" {
 
 resource "yandex_vpc_subnet" "private" {
   description    = "Приватная подсеть с маршрутизацией через NAT"
-  name           = "private"
+  name           = "${var.flow}-private"
   zone           = var.zone
   network_id     = yandex_vpc_network.main.id
   v4_cidr_blocks = ["192.168.20.0/24"]
@@ -24,7 +24,7 @@ resource "yandex_vpc_subnet" "private" {
 
 resource "yandex_vpc_route_table" "nat_route" {
   description = "Маршрутизация исходящего трафика приватной подсети через NAT-инстанс"
-  name        = "nat-instance-route"
+  name        = "${var.flow}-nat-instance-route"
   network_id  = yandex_vpc_network.main.id
 
   static_route {

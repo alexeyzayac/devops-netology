@@ -16,15 +16,15 @@ resource "yandex_lb_network_load_balancer" "nlb" {
     target_group_id = yandex_compute_instance_group.lamp_ig.load_balancer.0.target_group_id
 
     healthcheck {
-      name                = "http-healthcheck"
-      interval            = 10
-      timeout             = 5
-      unhealthy_threshold = 3
-      healthy_threshold   = 2
+      name                = local.healthcheck.name
+      interval            = local.healthcheck.interval
+      timeout             = local.healthcheck.timeout
+      unhealthy_threshold = local.healthcheck.unhealthy_threshold
+      healthy_threshold   = local.healthcheck.healthy_threshold
 
       http_options {
-        port = 80
-        path = "/"
+        port = local.healthcheck.port
+        path = local.healthcheck.path
       }
     }
   }

@@ -43,3 +43,4 @@ variable "image_path" {
   default     = "../bucket_img/image.jpg"
   nullable    = false
 }
+

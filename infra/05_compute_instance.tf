@@ -1,7 +1,7 @@
 # ./terraform/05_compute_instance.tf
 
 resource "yandex_compute_instance" "nat_instance" {
-  name        = "nat-instance"
+  name        = "nat-instance-${var.flow}"
   platform_id = "standard-v3"
   zone        = var.zone
   depends_on  = [tls_private_key.ssh]
@@ -34,7 +34,7 @@ resource "yandex_compute_instance" "nat_instance" {
 
 resource "yandex_compute_instance" "public_vm" {
   depends_on  = [yandex_compute_instance.nat_instance]
-  name        = "vm-public"
+  name        = "vm-public-${var.flow}"
   platform_id = "standard-v3"
   zone        = var.zone
 
@@ -64,7 +64,7 @@ resource "yandex_compute_instance" "public_vm" {
 
 resource "yandex_compute_instance" "private_vm" {
   depends_on  = [yandex_vpc_route_table.nat_route]
-  name        = "vm-private"
+  name        = "vm-private-${var.flow}"
   platform_id = "standard-v3"
   zone        = var.zone
 

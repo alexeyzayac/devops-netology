@@ -2,7 +2,7 @@
 
 resource "yandex_vpc_security_group" "nat_sg" {
   description = "Security group для NAT-инстанса: исходящий интернет и входящие сервисные порты"
-  name        = "nat-instance-sg"
+  name        = "nat-instance-sg-${var.flow}"
   network_id  = yandex_vpc_network.main.id
 
   egress {
