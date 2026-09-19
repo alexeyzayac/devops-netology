@@ -1,4 +1,4 @@
-# ./terraform/01_locals.tf
+# ./infra/01_locals.tf
 
 locals {
   healthcheck = {

@@ -1,4 +1,4 @@
-# ./terraform/04_secrets.tf
+# ./infra/04_secrets.tf
 
 resource "tls_private_key" "ssh" {
   algorithm = "ED25519"
@@ -21,8 +21,8 @@ data "yandex_iam_service_account" "provider_sa" {
 }
 
 resource "yandex_kms_symmetric_key" "bucket_key" {
+  description       = "Симметричный KMS-ключ для шифрования бакета ${var.flow}-bucket"
   name              = "bucket-encryption-key-${var.flow}"
-  description       = "Симметричный KMS-ключ для шифрования бакета ${var.bucket_name}"
   default_algorithm = "AES_256"
   rotation_period   = "8760h"
 }

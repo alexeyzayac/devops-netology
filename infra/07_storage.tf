@@ -1,7 +1,7 @@
-# ./terraform/06_storage.tf
+# ./infra/06_storage.tf
 
 resource "yandex_storage_bucket" "picture_bucket" {
-  bucket        = var.bucket_name
+  bucket        = "${var.flow}-bucket"
   folder_id     = var.folder_id
   force_destroy = true
 

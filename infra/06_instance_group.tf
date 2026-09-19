@@ -1,4 +1,4 @@
-# ./terraform/07_instance_group.tf
+# ./infra/07_instance_group.tf
 
 resource "yandex_iam_service_account" "ig_sa" {
   name = "ig-service-account-${var.flow}"
@@ -50,7 +50,7 @@ resource "yandex_compute_instance_group" "lamp_ig" {
     }
 
     metadata = {
-      hostname = "lamp-vm-{instance.index}"
+      hostname = "${var.flow}-lamp-vm-{instance.index}"
       user-data = templatefile("${path.module}/cloud_init_lamp_ig.tpl", {
         ssh_public_key = trimspace(tls_private_key.ssh.public_key_openssh)
         picture_url    = "https://${yandex_storage_bucket.picture_bucket.bucket}.storage.yandexcloud.net/picture.jpg"

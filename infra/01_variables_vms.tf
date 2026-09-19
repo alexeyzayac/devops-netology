@@ -1,4 +1,4 @@
-# ./terraform/01_variables_vms.tf
+# ./infra/01_variables_vms.tf
 
 variable "nat_resources" {
   description = "Параметры ресурсов NAT-инстанса"

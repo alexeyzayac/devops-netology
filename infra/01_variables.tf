@@ -1,4 +1,4 @@
-# ./terraform/01_variables.tf
+# ./infra/01_variables.tf
 
 variable "flow" {
   description = "Переменная для идентификации версии"
@@ -31,12 +31,6 @@ variable "zone" {
   nullable    = false
 }
 
-variable "bucket_name" {
-  description = "Имя бакета Object Storage"
-  type        = string
-  nullable    = false
-}
-
 variable "image_path" {
   description = "Путь к файлу с картинкой для загрузки в бакет"
   type        = string
@@ -44,3 +38,15 @@ variable "image_path" {
   nullable    = false
 }
 
+variable "mysql_user_name" {
+  description = "Имя пользователя MySQL"
+  type        = string
+  nullable    = false
+}
+
+variable "mysql_user_password" {
+  description = "Пароль пользователя MySQL"
+  type        = string
+  sensitive   = true
+  nullable    = false
+}

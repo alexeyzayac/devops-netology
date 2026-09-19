@@ -1,4 +1,4 @@
-# ./terraform/99_outputs.tf
+# ./infra/99_outputs.tf
 
 output "public_vm_public_ip" {
   description = "Публичный IP-адрес публичной ВМ"

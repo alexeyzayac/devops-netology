@@ -1,4 +1,4 @@
-# ./terraform/08_load_balancer.tf
+# ./infra/08_load_balancer.tf
 
 resource "yandex_lb_network_load_balancer" "nlb" {
   name = "nlb-${var.flow}"

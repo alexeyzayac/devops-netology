@@ -1,4 +1,4 @@
-# ./terraform/05_compute_instance.tf
+# ./infra/05_compute_instance.tf
 
 resource "yandex_compute_instance" "nat_instance" {
   name        = "nat-instance-${var.flow}"
@@ -63,7 +63,7 @@ resource "yandex_compute_instance" "public_vm" {
 }
 
 resource "yandex_compute_instance" "private_vm" {
-  depends_on  = [yandex_vpc_route_table.nat_route]
+  depends_on  = [yandex_vpc_route_table.nat_route_private]
   name        = "vm-private-${var.flow}"
   platform_id = "standard-v3"
   zone        = var.zone

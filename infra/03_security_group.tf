@@ -1,4 +1,4 @@
-# ./terraform/03_security_group.tf
+# ./infra/03_security_group.tf
 
 resource "yandex_vpc_security_group" "nat_sg" {
   description = "Security group для NAT-инстанса: исходящий интернет и входящие сервисные порты"
@@ -56,5 +56,24 @@ resource "yandex_vpc_security_group" "ig_sg" {
     port           = 22
     protocol       = "TCP"
     v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "yandex_vpc_security_group" "mysql_sg" {
+  description = "Security group для кластера MySQL"
+  name        = "mysql-sg-${var.flow}"
+  network_id  = yandex_vpc_network.main.id
+
+  egress {
+    protocol       = "ANY"
+    description    = "Разрешить весь исходящий трафик"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description    = "Доступ к MySQL из приватных подсетей"
+    port           = 3306
+    protocol       = "TCP"
+    v4_cidr_blocks = ["192.168.0.0/16"]
   }
 }
