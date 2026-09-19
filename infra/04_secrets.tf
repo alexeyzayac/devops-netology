@@ -32,3 +32,21 @@ resource "yandex_resourcemanager_folder_iam_member" "kms_encrypter_decrypter" {
   role      = "kms.keys.encrypterDecrypter"
   member    = "serviceAccount:${data.yandex_iam_service_account.provider_sa.id}"
 }
+
+resource "yandex_iam_service_account" "k8s_sa" {
+  description = "Сервис-аккаунт для Managed Kubernetes"
+  name        = "k8s-sa-${var.flow}"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "k8s_sa_roles" {
+  for_each = toset([
+    "k8s.clusters.agent",
+    "kms.keys.encrypterDecrypter",
+    "container-registry.images.puller",
+    "vpc.publicAdmin",
+  ])
+
+  folder_id = var.folder_id
+  role      = each.value
+  member    = "serviceAccount:${yandex_iam_service_account.k8s_sa.id}"
+}

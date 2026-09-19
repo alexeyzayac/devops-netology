@@ -1,6 +1,11 @@
 # ./infra/09_mysql_cluster.tf
 
 resource "yandex_mdb_mysql_cluster" "mysql_cluster" {
+  depends_on = [
+    yandex_vpc_subnet.private,
+    yandex_vpc_subnet.private_b,
+    yandex_vpc_subnet.private_d,
+  ]
   description = "Отказоустойчивый кластер MySQL для потока ${var.flow}"
   name        = "mysql-cluster-${var.flow}"
   environment = "PRESTABLE"
@@ -43,12 +48,6 @@ resource "yandex_mdb_mysql_cluster" "mysql_cluster" {
     zone      = "ru-central1-d"
     subnet_id = yandex_vpc_subnet.private_d.id
   }
-
-  depends_on = [
-    yandex_vpc_subnet.private,
-    yandex_vpc_subnet.private_b,
-    yandex_vpc_subnet.private_d,
-  ]
 }
 
 resource "yandex_mdb_mysql_database" "netology_db" {

@@ -29,3 +29,13 @@ output "nlb_public_ip" {
   description = "Публичный IP сетевого балансировщика"
   value       = tolist(tolist(yandex_lb_network_load_balancer.nlb.listener)[0].external_address_spec)[0].address
 }
+
+output "k8s_cluster_id" {
+  description = "ID кластера Kubernetes"
+  value       = yandex_kubernetes_cluster.k8s_cluster.id
+}
+
+output "k8s_cluster_name" {
+  description = "Имя кластера Kubernetes"
+  value       = yandex_kubernetes_cluster.k8s_cluster.name
+}

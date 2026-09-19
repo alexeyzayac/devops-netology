@@ -1,4 +1,4 @@
-# Домашнее задание к занятию 3 "`Безопасность в облачных провайдерах`" - `Заяц Алексей`
+# Домашнее задание к занятию 4 "`Кластеры. Ресурсы под управлением облачных провайдеров`" - `Заяц Алексей`
 
 ### Цели задания 
 
@@ -44,7 +44,57 @@
 * 02_network.tf
 * 03_security_group.tf
 * 04_secrets.tf
+* 99_outputs.tf
 * terraform.tfvars
 
 Были созданы конфигурации: 
 * 09_mysql_cluster.tf
+* 10_kubernetes.tf
+
+### Созданные ресурсы:
+
+![screenshot_1.png](./img/screenshot_1.png)
+
+### Созданные ноды кластера в разных подсетях:
+
+![screenshot_2.png](./img/screenshot_2.png)
+
+### Проверка базы данных:
+
+```bash
+mysql --host=rc1a-gk7mr6fulhiv2tr8.mdb.yandexcloud.net \
+      --port=3306 \
+      --ssl-mode=REQUIRED \
+      --user=netology_user \
+      --password=Qwerty123
+```
+
+```bash
+SHOW DATABASES;
+USE netology_db;
+CREATE TABLE hello (x INT);
+INSERT INTO hello (x) VALUES (10);
+SELECT * FROM hello;
+```
+
+![screenshot_3.png](./img/screenshot_3.png)
+
+### Созданный кластер:
+
+![screenshot_4.png](./img/screenshot_4.png)
+
+![screenshot_5.png](./img/screenshot_5.png)
+
+### Узлы кластер:
+
+![screenshot_6.png](./img/screenshot_6.png)
+
+![screenshot_7.png](./img/screenshot_7.png)
+
+### Проверка `kubectl`
+
+![screenshot_8.png](./img/screenshot_8.png)
+
+### Карта итогов с 1 по 4 задание:
+
+![screenshot_9.png](./img/screenshot_9.png)

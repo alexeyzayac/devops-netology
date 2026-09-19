@@ -77,3 +77,21 @@ resource "yandex_vpc_security_group" "mysql_sg" {
     v4_cidr_blocks = ["192.168.0.0/16"]
   }
 }
+
+resource "yandex_vpc_security_group" "k8s_sg" {
+  description = "Security group для кластера Kubernetes: API, kubelet, внутренняя связность"
+  name        = "k8s-sg-${var.flow}"
+  network_id  = yandex_vpc_network.main.id
+
+  egress {
+    description    = "Разрешить весь исходящий трафик"
+    protocol       = "ANY"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description    = "Разрешить весь входящий трафик"
+    protocol       = "ANY"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+}
